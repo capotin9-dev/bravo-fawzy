@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>براڤو عليك فوزي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #04080f;
+    --surface: #0b1220;
+    --surface2: #111d30;
+    --border: #1c2d45;
+    --gold: #f5c842;
+    --gold2: #c9971e;
+    --blue: #00aaff;
+    --blue2: #0077cc;
+    --green: #00d47a;
+    --red: #ff3d55;
+    --text: #ddeeff;
+    --dim: #4a6080;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+    background: var(--bg);
+    color: var(--text);
+    text-align: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 40%, rgba(0,120,255,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 20%, rgba(245,200,66,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 90%, rgba(0,170,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ══ SELECTION SCREEN ══ */
+  #selectionScreen {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 16px;
+  }
+
+  .sel-title {
+    font-size: clamp(26px, 6vw, 48px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), #fff 50%, var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .sel-subtitle { color: var(--dim); font-size: 16px; margin-bottom: 6px; animation: fadeDown 0.7s ease both; }
+  .sel-instruction { font-size: 15px; color: var(--gold); font-weight: 700; margin-bottom: 10px; animation: fadeDown 0.8s ease both; }
+  .sel-counter { font-size: 14px; color: var(--dim); margin-bottom: 20px; animation: fadeDown 0.85s ease both; }
+  .sel-counter span { color: var(--blue); font-weight: 900; font-size: 18px; }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    max-width: 820px;
+    width: 100%;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .cat-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 12px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.22s;
+    border-radius: 14px;
+  }
+
+  .cat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+  .cat-card.selected {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(245,200,66,0.25);
+  }
+
+  .cat-card.selected::before { opacity: 1; background: rgba(245,200,66,0.08); }
+
+  .cat-card.disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+  .cat-card.selected.disabled { opacity: 1; cursor: pointer; }
+
+  .cat-emoji { font-size: 30px; margin-bottom: 8px; display: block; }
+  .cat-name { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  .check-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #000;
+    font-weight: 900;
+  }
+
+  .cat-card.selected .check-badge { display: flex; }
+
+  .start-btn {
+    padding: 14px 48px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #000;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.4;
+    pointer-events: none;
+    animation: fadeUp 0.9s ease both;
+  }
+
+  .start-btn.ready { opacity: 1; pointer-events: all; box-shadow: 0 6px 24px rgba(245,200,66,0.3); }
+  .start-btn.ready:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(245,200,66,0.4); }
+
+  /* ══ GAME SCREEN ══ */
+  #gameScreen { display: none; position: relative; z-index: 1; padding: 16px 10px 40px; }
+
+  .game-title {
+    font-size: clamp(20px, 4.5vw, 36px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), #fff, var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  .game-subtitle { color: var(--dim); font-size: 14px; margin-bottom: 4px; }
+
+  .hard-badge {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 3px 14px;
+    background: rgba(255,61,85,0.15);
+    border: 1px solid rgba(255,61,85,0.4);
+    border-radius: 20px;
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .scoreboard { display: flex; justify-content: center; gap: 14px; margin: 0 auto 14px; max-width: 460px; }
+
+  .score-card {
+    flex: 1;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 10px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.22s; }
+  .score-card.team1::before { background: linear-gradient(135deg, rgba(0,170,255,0.12), transparent); }
+  .score-card.team2::before { background: linear-gradient(135deg, rgba(245,200,66,0.12), transparent); }
+  .score-card.active { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+  .score-card.team1.active { border-color: var(--blue); }
+  .score-card.team2.active { border-color: var(--gold); }
+  .score-card.active::before { opacity: 1; }
+
+  .score-label { font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 3px; }
+  .score-card.team1 .score-label { color: var(--blue); }
+  .score-card.team2 .score-label { color: var(--gold); }
+
+  .score-value { font-size: 32px; font-weight: 900; line-height: 1; }
+  .score-card.team1 .score-value { color: var(--blue); }
+  .score-card.team2 .score-value { color: var(--gold); }
+
+  .active-badge { display: none; font-size: 11px; margin-top: 5px; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+  .score-card.team1.active .active-badge { display: inline-block; background: rgba(0,170,255,0.2); color: var(--blue); }
+  .score-card.team2.active .active-badge { display: inline-block; background: rgba(245,200,66,0.2); color: var(--gold); }
+
+  .timer-wrap {
+    margin: 0 auto 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 7px 20px;
+    font-size: 17px;
+    font-weight: 700;
+    transition: all 0.3s;
+  }
+
+  .timer-wrap.urgent { border-color: var(--red); color: var(--red); animation: pulse 0.5s infinite alternate; }
+  .timer-wrap.done { border-color: var(--red); background: rgba(255,61,85,0.15); color: var(--red); }
+
+  @keyframes pulse {
+    from { box-shadow: 0 0 0 0 rgba(255,61,85,0.4); }
+    to   { box-shadow: 0 0 0 8px rgba(255,61,85,0); }
+  }
+
+  .table-wrap { width: 100%; overflow-x: auto; margin: 12px 0; }
+
+  table { width: 96%; max-width: 1000px; margin: auto; border-collapse: separate; border-spacing: 4px; }
+
+  th {
+    background: linear-gradient(180deg, #1a2540, #0f1825);
+    border: 1px solid var(--border);
+    padding: 10px 5px;
+    font-size: clamp(10px, 1.5vw, 13px);
+    font-weight: 700;
+    color: var(--blue);
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  td {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: clamp(9px, 1.8vw, 16px) 6px;
+    cursor: pointer;
+    font-size: clamp(14px, 2.5vw, 20px);
+    font-weight: 900;
+    color: var(--gold);
+    border-radius: 8px;
+    transition: all 0.18s ease;
+    user-select: none;
+  }
+
+  td:hover:not(.used) {
+    background: var(--blue2);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0,170,255,0.3);
+    border-color: var(--blue);
+  }
+
+  td.used {
+    background: #060c14 !important;
+    color: #151f2e !important;
+    cursor: not-allowed;
+    transform: none !important;
+    border-color: #0b1220 !important;
+  }
+
+  #questionBox {
+    max-width: 680px;
+    margin: 12px auto;
+    padding: 22px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    min-height: 90px;
+    text-align: right;
+    line-height: 1.7;
+    transition: all 0.3s;
+  }
+
+  .q-team { font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; padding: 3px 10px; border-radius: 20px; display: inline-block; }
+  .q-team.t1 { background: rgba(0,170,255,0.15); color: var(--blue); }
+  .q-team.t2 { background: rgba(245,200,66,0.15); color: var(--gold); }
+
+  .q-text { font-size: clamp(16px, 2.6vw, 21px); font-weight: 700; color: var(--text); margin-bottom: 10px; }
+
+  .q-answer {
+    margin-top: 12px;
+    padding: 11px 14px;
+    background: rgba(0,212,122,0.1);
+    border: 1px solid rgba(0,212,122,0.3);
+    border-radius: 10px;
+    color: var(--green);
+    font-weight: 700;
+    font-size: 15px;
+    animation: fadeIn 0.35s ease;
+  }
+
+  .placeholder { color: var(--dim); font-size: 15px; padding: 16px 0; }
+
+  @keyframes fadeIn   { from { opacity:0; transform:translateY(6px);   } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-16px);  } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp   { from { opacity:0; transform:translateY(16px);   } to { opacity:1; transform:translateY(0); } }
+
+  .actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 10px auto; max-width: 600px; }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn:active { transform: scale(0.96); }
+  .btn-show    { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-show:hover { background: #1c2d45; }
+  .btn-correct { background: var(--green); color: #001a0e; }
+  .btn-correct:hover { filter: brightness(1.1); box-shadow: 0 4px 16px rgba(0,212,122,0.35); }
+  .btn-wrong   { background: var(--red); color: white; }
+  .btn-wrong:hover { filter: brightness(1.1); box-shadow: 0 4px 16px rgba(255,61,85,0.35); }
+  .btn-restart { background: var(--surface2); color: var(--gold); border: 1px solid var(--gold2); }
+  .btn-restart:hover { background: rgba(245,200,66,0.1); }
+
+  #toast {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    z-index: 9999;
+    transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  #toast.show  { transform: translateX(-50%) translateY(0); }
+  #toast.correct { border-color: var(--green); color: var(--green); }
+  #toast.wrong   { border-color: var(--red);   color: var(--red);   }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SELECTION SCREEN ══════════════════ -->
+<div id="selectionScreen">
+  <div class="sel-title">🏆 براڤو عليك فوزي</div>
+  <div class="sel-subtitle">اختار 5 فئات عشان تبدأ اللعبة</div>
+  <div class="sel-instruction">اضغط على الفئة عشان تختارها أو تلغيها</div>
+  <div class="sel-counter">اخترت <span id="countDisplay">0</span> من 5</div>
+  <div class="categories-grid" id="categoriesGrid"></div>
+  <button class="start-btn" id="startBtn" onclick="startGame()">🚀 ابدأ اللعبة</button>
+</div>
+
+<!-- ══════════════════ GAME SCREEN ══════════════════ -->
+<div id="gameScreen">
+  <div class="game-title">🏆 براڤو عليك فوزي</div>
+  <div class="game-subtitle">👋 أهلاً وسهلاً بكم في اللعبة</div>
+  <div class="hard-badge">🔥 النسخة الصعبة</div>
+
+  <div class="scoreboard">
+    <div class="score-card team1" onclick="setTeam(1)" id="card1">
+      <div class="score-label">فريق 1</div>
+      <div class="score-value" id="score1">0</div>
+      <div class="active-badge">▶ دورك</div>
+    </div>
+    <div class="score-card team2" onclick="setTeam(2)" id="card2">
+      <div class="score-label">فريق 2</div>
+      <div class="score-value" id="score2">0</div>
+      <div class="active-badge">▶ دورك</div>
+    </div>
+  </div>
+
+  <div class="timer-wrap" id="timerWrap">⏱️ <span id="timerVal">60</span></div>
+
+  <div class="table-wrap">
+    <table id="gameTable">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div id="questionBox">
+    <div class="placeholder">اختر فريق ثم اضغط على النقاط لتبدأ اللعبة ⬆️</div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-show"    onclick="showAnswer()">📢 إظهار الإجابة</button>
+    <button class="btn btn-correct" onclick="correct()">✔ صح</button>
+    <button class="btn btn-wrong"   onclick="wrong()">❌ خطأ</button>
+    <button class="btn btn-restart" onclick="renewQuestions()">🔄 جدد الأسئلة</button>
+    <button class="btn btn-restart" onclick="goBack()">🔙 تغيير الفئات</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  ALL CATEGORIES & QUESTIONS
+//  NOTE: Use an array so duplicate names are not collapsed.
+// ════════════════════════════════════════════════════════
+const allCategories = [
+
+  {
+    name: "الدوري الإنجليزي ⚽",
+    emoji: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+    questions: [
+      { q: "من هو الهداف التاريخي للدوري الإنجليزي؟", a: "آلان شيرر" },
+      { q: "ما هو النادي الإنجليزي الملقب بـ The Blues؟", a: "تشيلسي" },
+      { q: "من هو أكثر مدرب فوزاً بالدوري الإنجليزي؟", a: "أليكس فيرغسون" },
+      { q: "ما هو لقب نادي مانشستر يونايتد؟", a: "الشياطين الحمر" },
+      { q: "في أي نادٍ لعب محمد صلاح قبل ليفربول؟", a: "روما" },
+      { q: "ما هو لقب نادي ليفربول؟", a: "الريدز" },
+      { q: "من هو الهداف التاريخي لآرسنال في الدوري الإنجليزي؟", a: "تيري هنري" },
+      { q: "كم مرة فاز مانشستر يونايتد بدوري أبطال أوروبا؟", a: "3 مرات" },
+      { q: "ما هو ملعب نادي أرسنال؟", a: "ملعب الإمارات" },
+      { q: "من هو الهداف التاريخي لتشيلسي في الدوري الإنجليزي؟", a: "فرانك لامبارد" }
+    ]
+  },
+
+  {
+    name: "الدوري المصري ⚽",
+    emoji: "🇪🇬",
+    questions: [
+      { q: "من هو الهداف التاريخي للدوري المصري الممتاز عبر كل العصور؟", a: "حسن الشاذلي (الترسانة) — 176 هدفاً" },
+      { q: "ما هو النادي الذي فاز بأول نسخة في تاريخ الدوري المصري عام 1948؟", a: "النادي الأهلي" },
+      { q: "من هو أول لاعب غير مصري يحقق لقب هداف الدوري المصري الممتاز؟", a: "علي محسن (اليمني — الزمالك) موسم 1960–1961" },
+      { q: "ما النادي الوحيد إلى جانب الأهلي والزمالك الذي لم يهبط أبداً للدرجة الثانية؟", a: "الاتحاد السكندري" },
+      { q: "ما هو النادي الصعيدي الملقب بـ «تماسيح النيل»؟", a: "نادي أسوان" },
+      { q: "من هو أصغر لاعب يسجل هدفاً في مباراة القمة بين الأهلي والزمالك؟", a: "حسام حسن (19 عاماً — 1986)" },
+      { q: "ما اسم النادي الهابط حالياً الذي فاز بالدوري موسم 2001–2002 بقيادة مدرب ألماني؟", a: "الإسماعيلي (الدراويش)" },
+      { q: "من هو اللاعب الأكثر مشاركة في تاريخ الدوري المصري الممتاز؟", a: "عصام الحضري" },
+      { q: "ما النادي الذي تغير اسمه من الأسيوطي سبورت ليصبح من أقوى المنافسين؟", a: "بيراميدز (Pyramids FC)" },
+      { q: "من المدرب الأجنبي الذي قاد الأهلي لأطول سلسلة لا هزيمة في الدوري؟", a: "مانويل جوزيه (البرتغالي)" }
+    ]
+  },
+
+  {
+    name: "عملات 💰",
+    emoji: "💰",
+    questions: [
+      { q: "ما العملة الرسمية للمملكة المتحدة؟", a: "الجنيه الإسترليني" },
+      { q: "ما العملة الرسمية للبرازيل؟", a: "الريال البرازيلي" },
+      { q: "ما العملة الرسمية لأستراليا؟", a: "الدولار الأسترالي" },
+      { q: "ما العملة الرسمية لتركيا؟", a: "الليرة التركية" },
+      { q: "ما العملة الرسمية للهند؟", a: "الروبية الهندية" },
+      { q: "ما العملة الرسمية للسعودية؟", a: "الريال السعودي" },
+      { q: "ما العملة الرسمية للصين؟", a: "اليوان الصيني" },
+      { q: "ما العملة الرسمية لكندا؟", a: "الدولار الكندي" },
+      { q: "ما العملة الرسمية لإيران؟", a: "الريال الإيراني" },
+      { q: "ما العملة الرسمية لسويسرا؟", a: "الفرنك السويسري" }
+    ]
+  },
+
+  {
+    name: "ولايات أمريكية 🗺️",
+    emoji: "🗺️",
+    questions: [
+      { q: "أي ولاية أمريكية تُعرف بـ The Peach State؟", a: "جورجيا" },
+      { q: "ما عاصمة ولاية نيويورك؟", a: "ألباني" },
+      { q: "أي ولاية أمريكية هي الأكبر مساحة؟", a: "ألاسكا" },
+      { q: "أي ولاية أمريكية تُعرف بـ The Golden State؟", a: "كاليفورنيا" },
+      { q: "أي ولاية أمريكية تُعرف بـ The Aloha State؟", a: "هاواي" },
+      { q: "ما عاصمة ولاية تكساس؟", a: "أوستن" },
+      { q: "أي ولاية أمريكية تُعرف بـ The Silver State؟", a: "نيفادا" },
+      { q: "ما عاصمة ولاية فلوريدا؟", a: "تالاهاسي" },
+      { q: "أي ولاية أمريكية هي الأصغر مساحة؟", a: "رود آيلاند" },
+      { q: "في أي ولاية يقع تمثال الحرية؟", a: "نيويورك" }
+    ]
+  },
+
+  {
+    name: "عواصم 🌍",
+    emoji: "🌍",
+    questions: [
+      { q: "ما عاصمة كندا؟", a: "أوتاوا" },
+      { q: "ما عاصمة أستراليا؟", a: "كانبيرا" },
+      { q: "ما عاصمة سويسرا؟", a: "برن" },
+      { q: "ما عاصمة باكستان؟", a: "إسلام آباد" },
+      { q: "ما عاصمة البرازيل؟", a: "برازيليا" },
+      { q: "ما عاصمة إندونيسيا؟", a: "جاكرتا" },
+      { q: "ما عاصمة تركيا؟", a: "أنقرة" },
+      { q: "ما عاصمة ماليزيا؟", a: "كوالالمبور" },
+      { q: "ما عاصمة فنلندا؟", a: "هلسنكي" },
+      { q: "ما عاصمة بولندا؟", a: "وارسو" }
+    ]
+  },
+
+  {
+    name: "تاريخ إسلامي ☪️",
+    emoji: "☪️",
+    questions: [
+      { q: "من أول مؤذن في الإسلام؟", a: "بلال بن رباح" },
+      { q: "كم عدد الخلفاء الراشدين؟", a: "أربعة" },
+      { q: "من هو الصحابي الملقب بـ أسد الله؟", a: "حمزة بن عبد المطلب" },
+      { q: "في أي عام كانت غزوة بدر؟", a: "عام 624م — 2 هـ" },
+      { q: "ما هي السورة التي تسمى عروس القرآن؟", a: "سورة الرحمن" },
+      { q: "في أي غزوة استشهد حمزة بن عبد المطلب؟", a: "غزوة أحد" },
+      { q: "من هو الخليفة الأموي الذي بنى قبة الصخرة؟", a: "عبد الملك بن مروان" },
+      { q: "كم عدد سور القرآن الكريم؟", a: "114 سورة" },
+      { q: "من هو النبي الذي ابتلعه الحوت؟", a: "يونس عليه السلام" },
+      { q: "ما هي السورة التي تُسمى قلب القرآن؟", a: "سورة يس" }
+    ]
+  },
+
+  {
+    name: "أفلام مصرية 🎬",
+    emoji: "🎬",
+    questions: [
+      { q: "من الممثل الذي جسد شخصية «حنفي» في ابن حميدو وصاحب جملة «خلاص تنزل المرة دي»؟", a: "عبد الفتاح القصري" },
+      { q: "في فيلم الناصر صلاح الدين، من قام بدور القائد صلاح الدين الأيوبي؟", a: "أحمد مظهر" },
+      { q: "ما اسم الفيلم الذي جمع عمر الشريف وفاتن حمامة ودار في الأقصر وكان سبب زواجهما؟", a: "صراع في الوادي" },
+      { q: "من الفنانة التي أدت دور «أنيسة» زوجة عبد الغفور البرعي في شبابها بفيلم سوق المتعة؟", a: "إلهام شاهين" },
+      { q: "في صعيدي في الجامعة الأمريكية، ما اسم شخصية أحمد السقا صديق خلف الدهشوري؟", a: "علي" },
+      { q: "من الفنان الذي لعب دور الضابط «خالد» مع عادل إمام في أمير الظلام؟", a: "خالد سرحان" },
+      { q: "في الناظر، ما اسم الشخصية التي جسدها محمد سعد وتحولت لسلسلة أفلام مستقلة؟", a: "اللمبي" },
+      { q: "من الفنانة التي أدت دور «عبلة» حبيبة همام في همام في أمستردام؟", a: "موناليزا" },
+      { q: "في ولاد رزق، ما اسم الشهرة لشخصية أحمد عز؟", a: "رضا رزق" },
+      { q: "من بطل فيلم الفيل الأزرق الذي جسد شخصية الطبيب النفسي يحيى راشد؟", a: "كريم عبد العزيز" }
+    ]
+  },
+
+  {
+    name: "علوم وطب 🔬",
+    emoji: "🔬",
+    questions: [
+      { q: "ما هو الكوكب الأقرب إلى الشمس؟", a: "عطارد" },
+      { q: "كم عدد أضلاع جسم الإنسان؟", a: "24 ضلعاً — 12 زوجاً" },
+      { q: "كم درجة غليان الماء على مقياس سيليزيوس؟", a: "100 درجة مئوية" },
+      { q: "ما هو أسرع حيوان بري على وجه الأرض؟", a: "الفهد" },
+      { q: "كم تبلغ سرعة الضوء في الفراغ تقريباً؟", a: "300,000 كم/ث" },
+      { q: "ما هو أكبر كوكب في المجموعة الشمسية؟", a: "المشتري" },
+      { q: "كم عدد أسنان الإنسان البالغ؟", a: "32" },
+      { q: "ما هي أكبر غدة في جسم الإنسان؟", a: "الكبد" },
+      { q: "كم عدد الكروموسومات في خلية الإنسان؟", a: "46 كروموسوماً" },
+      { q: "ما هو العنصر الذي يرمز له بـ Fe في الجدول الدوري؟", a: "الحديد" }
+    ]
+  },
+
+  {
+    name: "دول وأعلام 🚩",
+    emoji: "🚩",
+    questions: [
+      { q: "🇮🇳 ده علم دولة إيه؟", a: "الهند" },
+      { q: "🇧🇷 ده علم دولة أمريكا اللاتينية إيه؟", a: "البرازيل" },
+      { q: "🇿🇦 ده علم دولة إفريقية إيه؟", a: "جنوب أفريقيا" },
+      { q: "🇸🇪 ده علم دولة إسكندنافية إيه؟", a: "السويد" },
+      { q: "🇹🇷 ده علم دولة إيه؟", a: "تركيا" },
+      { q: "🇫🇷 ده علم دولة أوروبية إيه؟", a: "فرنسا" },
+      { q: "🇩🇪 ده علم دولة أوروبية إيه؟", a: "ألمانيا" },
+      { q: "🇯🇵 ده علم دولة آسيوية إيه؟", a: "اليابان" },
+      { q: "🇪🇸 ده علم دولة أوروبية إيه؟", a: "إسبانيا" },
+      { q: "🇦🇺 ده علم دولة إيه؟", a: "أستراليا" }
+    ]
+  },
+
+  {
+    name: "كوبليهات عمرو دياب 🎵",
+    emoji: "🎵",
+    questions: [
+      { q: "أكمل كلمات الأغنية (مابتغيبش): «إسمك قدامي لو إتقال.. بيحرك قلبي في الحال.. شوف من إمتى وإحنا بعاد...»", a: "«بس الإحساس لسه ما زال»" },
+      { q: "أكمل كلمات الأغنية (إنت الحظ): «أنا لو تبقى معايا.. بيترج القلب ويتهز.. أنا لو تاخد عيني يا نور عيني...»", a: "«عيني ما تتعز»" },
+      { q: "أكمل كلمات الأغنية (وماله): «حبيبي إلمس إيديا عشان أصدق اللي أنا فيه.. ياما كان نفسي أقابلك بقالي زمان...»", a: "«خلاص وهحلم ليه»" },
+      { q: "أكمل كلمات الأغنية (ما تتعوضش): «مين أفتى وقال إن النسيان بالوقت.. سايبك من إمتى وياما إشتقت...»", a: "«وإن كنت بخبي في قلبي عذابي عليك»" },
+      { q: "أكمل كلمات الأغنية (خليك معايا): «أنا قلبي كله حنين.. ولا يطفي ناره حبيبي غير لو عيدتهالي...»", a: "«عارف بتعمل فيا إيه كلمة حبيبي»" },
+      { q: "أكمل كلمات الأغنية (وغلاوتك): «قلبي المفتون مجنون بيكي.. آه يا أول غنوة بغنيكي...»", a: "«من قلبي لقلبك طوالي»" },
+      { q: "أكمل كلمات الأغنية (أغيب): «أغيب أغيب وأسأل عليه.. عايش إزاي وبيعمل إيه؟.. بيقولوا مش قادر ينسى...»", a: "«عايش بيتعذب لسه»" },
+      { q: "أكمل كلمات الأغنية (يا أنا يا لا): «سلمت وبعترف وما فيش حاجة هتمنعني.. أنا جايلك أهو يا حبيبي أهو...»", a: "«ملي عيوني ومتعني»" },
+      { q: "أكمل كلمات الأغنية (وحشتيني): «بحبك هقولها.. يا ريت قبل أما أكملها.. تعالي في حضني ونقولها...»", a: "«إحنا الإتنين»" },
+      { q: "أكمل كلمات الأغنية (إنت الحظ): «بما إنك سر سعادتي وحبيبي ونصي التاني.. أنا عمري ما أضيع وقتي مع غيرك لو لثواني...»", a: "«خليتني معاك أتجرأ، ما إنت وجودك قواني»" }
+    ]
+  },
+
+  {
+    name: "مسلسلات مصرية 📺",
+    emoji: "📺",
+    questions: [
+      { q: "في أرابيسك، ما هي الحرفة التي مارسها حسن النعمان (صلاح السعدني)؟", a: "خرط وتصميم خشب الأرابيسك" },
+      { q: "من الفنانة التي جسدت شخصية «فضة المعداوي» بجملتها «يا دبريا سندي» في الراية البيضاء؟", a: "سناء جميل" },
+      { q: "في عائلة الحاج متولي، ما اسم الزوجة الأولى في حياة متولي؟", a: "زبيدة (والدة سعيد)" },
+      { q: "ما هو اللقب الشهير للفنان نور الشريف في مسلسلي عائلة الحاج متولي وسوق القماش؟", a: "الحاج متولي" },
+      { q: "في نيللي وشريهان، ما الشيء الذي تبحث عنه الأختان لفك شفرة ثروة جدهما؟", a: "ميكي جيب (مجلة ميكي)" },
+      { q: "في السبع وصايا، ما الجريمة التي يرتكبها الأشقاء في الحلقة الأولى؟", a: "قتل والدهم سيد نفيسة" },
+      { q: "في كفر دلهاب، ما الهوية الحقيقية للطبيب سعد (يوسف الشريف)؟", a: "شهاب الدين (ابن ساحر الكفر)" },
+      { q: "في زيزينيا، ما جنسية والدة بطل المسلسل «بشر عامر»؟", a: "إيطالية (فرنشيسكا)" },
+      { q: "في الحشاشين، ما اسم القلعة التي اتخذها حسن الصباح مركزاً له؟", a: "قلعة ألموت" },
+      { q: "في أعلى نسبة مشاهدة، أي منصة سببت شهرة شيماء ثم توريطها؟", a: "تيك توك (TikTok)" }
+    ]
+  },
+
+  {
+    name: "كأس الأمم الأفريقية 🏆",
+    emoji: "🏆",
+    questions: [
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2023؟", a: "ساحل العاج" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2013؟", a: "نيجيريا" },
+      { q: "من هو الهداف التاريخي لكأس الأمم الأفريقية؟", a: "صامويل إيتو" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2021؟", a: "السنغال" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2004؟", a: "تونس" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2019؟", a: "الجزائر" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2017؟", a: "الكاميرون" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2012؟", a: "زامبيا" },
+      { q: "من هو أكثر منتخب فوزاً بكأس الأمم الأفريقية؟", a: "مصر (7 ألقاب)" },
+      { q: "منتخب إيه كسب كأس الأمم الأفريقية 2000؟", a: "الكاميرون" }
+    ]
+  }
+
+];
+
+// ════════════════════════════════════════════════════════
+//  POOL / RANDOM SELECTION
+// ════════════════════════════════════════════════════════
+let gameQuestions = {};
+
+function pickRandom(arr, n) {
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
+function selectQuestions() {
+  gameQuestions = {};
+  selectedCats.forEach(idx => {
+    gameQuestions[idx] = pickRandom(allCategories[idx].questions, 5);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  SELECTION LOGIC
+// ════════════════════════════════════════════════════════
+const MAX_SELECT = 5;
+let selectedCats = [];
+
+function buildSelectionScreen() {
+  const grid = document.getElementById('categoriesGrid');
+  grid.innerHTML = '';
+  allCategories.forEach((cat, idx) => {
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.dataset.idx = idx;
+    card.innerHTML = `
+      <div class="check-badge">✓</div>
+      <span class="cat-emoji">${cat.emoji}</span>
+      <div class="cat-name">${cat.name}</div>
+    `;
+    card.onclick = () => toggleCat(idx, card);
+    grid.appendChild(card);
+  });
+}
+
+function toggleCat(idx, card) {
+  const pos = selectedCats.indexOf(idx);
+  if (pos !== -1) {
+    selectedCats.splice(pos, 1);
+    card.classList.remove('selected');
+  } else {
+    if (selectedCats.length >= MAX_SELECT) {
+      showToast('اختار 5 فئات بس!', 'wrong');
+      return;
+    }
+    selectedCats.push(idx);
+    card.classList.add('selected');
+  }
+  document.getElementById('countDisplay').textContent = selectedCats.length;
+  const startBtn = document.getElementById('startBtn');
+  if (selectedCats.length === MAX_SELECT) {
+    startBtn.classList.add('ready');
+    document.querySelectorAll('.cat-card').forEach(c => {
+      if (!c.classList.contains('selected')) c.classList.add('disabled');
+    });
+  } else {
+    startBtn.classList.remove('ready');
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('disabled'));
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  GAME LOGIC
+// ════════════════════════════════════════════════════════
+let team = 0;
+let timerInterval;
+let timeLeft = 60;
+let currentQuestion = null;
+let currentPoints = 0;
+let scores = { 1: 0, 2: 0 };
+const POINTS = [100, 200, 300, 400, 500];
+
+function startGame() {
+  if (selectedCats.length < MAX_SELECT) return;
+
+  team = 0;
+  scores = { 1: 0, 2: 0 };
+  currentQuestion = null;
+  document.getElementById('score1').textContent = '0';
+  document.getElementById('score2').textContent = '0';
+  document.getElementById('card1').classList.remove('active');
+  document.getElementById('card2').classList.remove('active');
+  document.getElementById('questionBox').innerHTML = '<div class="placeholder">اختر فريق ثم اضغط على النقاط لتبدأ اللعبة ⬆️</div>';
+  stopTimer();
+  document.getElementById('timerWrap').className = 'timer-wrap';
+  document.getElementById('timerVal').textContent = '60';
+
+  selectQuestions();
+  buildTable();
+  document.getElementById('selectionScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'block';
+}
+
+function buildTable() {
+  const head = document.getElementById('tableHead');
+  const body = document.getElementById('tableBody');
+  head.innerHTML = '';
+  body.innerHTML = '';
+
+  const hr = document.createElement('tr');
+  selectedCats.forEach(idx => {
+    const th = document.createElement('th');
+    th.textContent = allCategories[idx].name;
+    hr.appendChild(th);
+  });
+  head.appendChild(hr);
+
+  POINTS.forEach((pts, rowIdx) => {
+    const tr = document.createElement('tr');
+    selectedCats.forEach(idx => {
+      const qData = gameQuestions[idx][rowIdx];
+      const td = document.createElement('td');
+      td.textContent = pts;
+      td.dataset.q = qData.q;
+      td.dataset.a = qData.a;
+      td.dataset.pts = pts;
+      td.onclick = function() { askQuestion(this); };
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+}
+
+function askQuestion(cell) {
+  if (team === 0) { showToast('اختر فريق أولاً!', 'wrong'); return; }
+  if (cell.classList.contains('used')) return;
+  if (currentQuestion !== null) { showToast('⚠️ أجب على السؤال الحالي أولاً!', 'wrong'); return; }
+
+  currentQuestion = { q: cell.dataset.q, a: cell.dataset.a };
+  currentPoints = parseInt(cell.dataset.pts);
+
+  cell.classList.add('used');
+  cell.onclick = null;
+
+  const teamClass = team === 1 ? 't1' : 't2';
+  document.getElementById('questionBox').innerHTML = `
+    <div class="q-team ${teamClass}">فريق ${team} • ${currentPoints} نقطة</div>
+    <div class="q-text">${currentQuestion.q}</div>
+  `;
+
+  startTimer();
+}
+
+function setTeam(t) {
+  team = t;
+  document.getElementById('card1').classList.toggle('active', t === 1);
+  document.getElementById('card2').classList.toggle('active', t === 2);
+}
+
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.value = 0.15;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    osc.stop(ctx.currentTime + 0.12);
+  } catch (e) { /* audio not supported */ }
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 60;
+  const wrap = document.getElementById('timerWrap');
+  const val  = document.getElementById('timerVal');
+  wrap.className = 'timer-wrap';
+  val.textContent = timeLeft;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    val.textContent = timeLeft;
+    if (timeLeft <= 10 && timeLeft > 0) { wrap.className = 'timer-wrap urgent'; beep(); }
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      wrap.className = 'timer-wrap done';
+      val.textContent = '0';
+      showToast('⛔ انتهى الوقت!', 'wrong');
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  document.getElementById('timerWrap').className = 'timer-wrap';
+}
+
+function showAnswer() {
+  if (!currentQuestion) return;
+  stopTimer();
+  const box = document.getElementById('questionBox');
+  const existing = box.querySelector('.q-answer');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = 'q-answer';
+  div.innerHTML = '📢 الإجابة: ' + currentQuestion.a;
+  box.appendChild(div);
+}
+
+function soundWin() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.2);
+      osc.start(ctx.currentTime + i * 0.1);
+      osc.stop(ctx.currentTime + i * 0.1 + 0.2);
+    });
+  } catch (e) {}
+}
+
+function soundLose() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [330, 262, 196, 165].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sawtooth';
+      gain.gain.setValueAtTime(0.08, ctx.currentTime + i * 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.25);
+      osc.start(ctx.currentTime + i * 0.15);
+      osc.stop(ctx.currentTime + i * 0.15 + 0.25);
+    });
+  } catch (e) {}
+}
+
+function correct() {
+  if (!currentQuestion) return;
+  soundWin();
+  stopTimer();
+  scores[team] += currentPoints;
+  document.getElementById('score' + team).textContent = scores[team];
+  showToast(`✔ صح! +${currentPoints} نقطة لفريق ${team}`, 'correct');
+  currentQuestion = null;
+  team = team === 1 ? 2 : 1;
+  setTeam(team);
+}
+
+function wrong() {
+  if (!currentQuestion) return;
+  soundLose();
+  stopTimer();
+  scores[team] -= currentPoints;
+  document.getElementById('score' + team).textContent = scores[team];
+  showToast(`❌ خطأ! -${currentPoints} من فريق ${team}`, 'wrong');
+  currentQuestion = null;
+  team = team === 1 ? 2 : 1;
+  setTeam(team);
+}
+
+function renewQuestions() {
+  selectQuestions();
+  buildTable();
+  team = 0;
+  scores = { 1: 0, 2: 0 };
+  currentQuestion = null;
+  document.getElementById('score1').textContent = '0';
+  document.getElementById('score2').textContent = '0';
+  document.getElementById('card1').classList.remove('active');
+  document.getElementById('card2').classList.remove('active');
+  document.getElementById('questionBox').innerHTML = '<div class="placeholder">اختر فريق ثم اضغط على النقاط لتبدأ اللعبة ⬆️</div>';
+  stopTimer();
+  document.getElementById('timerWrap').className = 'timer-wrap';
+  document.getElementById('timerVal').textContent = '60';
+  showToast('🔄 تم تجديد الأسئلة للفئات المختارة!', 'correct');
+}
+
+function goBack() {
+  stopTimer();
+  currentQuestion = null;
+  selectedCats = [];
+  document.getElementById('countDisplay').textContent = '0';
+  document.getElementById('startBtn').classList.remove('ready');
+  document.querySelectorAll('.cat-card').forEach(c => {
+    c.classList.remove('selected', 'disabled');
+  });
+  document.getElementById('gameScreen').style.display = 'none';
+  document.getElementById('selectionScreen').style.display = 'flex';
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  setTimeout(() => { t.className = ''; }, 2800);
+}
+
+buildSelectionScreen();
+</script>
+</body>
+</html>
