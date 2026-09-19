@@ -683,6 +683,7 @@ const allCategories = [
 // ════════════════════════════════════════════════════════
 let gameQuestions = {};
 let usedQuestions = {};  // { categoryIdx: Set of question texts }
+let lastShown = {};      // { categoryIdx: [question texts of the current board] }
 
 function pickRandom(arr, n) {
   const shuffled = [...arr].sort(() => Math.random() - 0.5);
@@ -692,16 +693,16 @@ function pickRandom(arr, n) {
 function selectQuestions() {
   gameQuestions = {};
   selectedCats.forEach(idx => {
-    let available = allCategories[idx].questions.filter(
-      q => !usedQuestions[idx]?.has(q.q)
-    );
+    const pool = allCategories[idx].questions;
+    let available = pool.filter(q => !usedQuestions[idx]?.has(q.q));
     if (available.length < 5) {
-      usedQuestions[idx] = new Set();
-      available = allCategories[idx].questions;
+      const prevRound = lastShown[idx] || [];
+      available = pool.filter(q => !prevRound.includes(q.q));
     }
     const chosen = pickRandom(available, 5);
     if (!usedQuestions[idx]) usedQuestions[idx] = new Set();
     chosen.forEach(q => usedQuestions[idx].add(q.q));
+    lastShown[idx] = chosen.map(q => q.q);
     gameQuestions[idx] = chosen;
   });
 }
