@@ -730,6 +730,7 @@ function setTeam(nextTeam) {
   team = nextTeam;
   document.getElementById('team1Card').classList.toggle('active', team === 1);
   document.getElementById('team2Card').classList.toggle('active', team === 2);
+  if (currentMovie || played > 0) movieLabelEl.textContent = `الدور على ${getTeamName(team)}`;
 }
 
 function revealMovie() {
