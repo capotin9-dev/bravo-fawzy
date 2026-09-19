@@ -466,7 +466,7 @@
 
   <section class="panel" style="margin-top: 14px;">
     <div class="side-title">متابعة اللعبة</div>
-    <p class="mini-text">الأفلام لا تتكرر إلا بعد انتهاء البركة. لو الفريق ما عرفش أو الوقت خلص، الجولة تتحسب غلط وتقدر تكشف فيلم جديد للفريق التالي.</p>
+    <p class="mini-text">الأفلام لا تتكرر بين الفريقين في نفس اللعبة. لو الفريق ما عرفش أو الوقت خلص، الجولة تتحسب غلط وتقدر تكشف فيلم جديد للفريق التالي.</p>
     <div class="stats">
       <div class="stat"><b id="remainingCount">120</b><span>أفلام متبقية</span></div>
       <div class="stat"><b id="playedCount">0</b><span>جولات ملعوبة</span></div>
@@ -677,9 +677,8 @@ function revealMovie() {
   }
 
   if (remainingMovies() === 0) {
-    buildDecks();
-    resetDifficultyCounts();
-    showToast('خلصت البركة، بدأنا خلط جديد');
+    showToast('خلصت كل الأفلام، ابدأ لعبة جديدة');
+    return;
   }
 
   currentMovie = drawMovieForTeam();
