@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أفلام فوزي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07050b;
+    --surface: #14101f;
+    --surface2: #1d172b;
+    --border: #34294a;
+    --gold: #f6c85f;
+    --orange: #ff8a3d;
+    --pink: #ff4f8b;
+    --blue: #4cc9f0;
+    --green: #38d996;
+    --red: #ff4d5f;
+    --text: #fff7ea;
+    --muted: #a899bc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Tajawal', sans-serif;
+    background:
+      radial-gradient(circle at 10% 15%, rgba(255,79,139,0.18), transparent 30%),
+      radial-gradient(circle at 90% 10%, rgba(76,201,240,0.15), transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(246,200,95,0.12), transparent 35%),
+      var(--bg);
+    color: var(--text);
+    text-align: center;
+    overflow-x: hidden;
+  }
+
+  .app {
+    width: min(1120px, 100%);
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 26px 14px 42px;
+    position: relative;
+  }
+
+  .hero {
+    padding: 22px 14px 18px;
+  }
+
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid rgba(246,200,95,0.35);
+    border-radius: 999px;
+    color: var(--gold);
+    background: rgba(246,200,95,0.08);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: clamp(34px, 8vw, 76px);
+    line-height: 0.95;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff, var(--gold) 35%, var(--pink) 72%, var(--blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    max-width: 760px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: clamp(15px, 3.4vw, 19px);
+    line-height: 1.8;
+  }
+
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 22px auto 18px;
+  }
+
+  .rule {
+    background: rgba(20,16,31,0.82);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 13px 10px;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.22);
+  }
+
+  .rule strong {
+    display: block;
+    color: var(--gold);
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .rule span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: 1fr 1.45fr 1fr;
+    gap: 14px;
+    align-items: stretch;
+    margin-top: 18px;
+  }
+
+  .panel {
+    background: rgba(20,16,31,0.9);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.32);
+    backdrop-filter: blur(10px);
+  }
+
+  .score-card {
+    min-height: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .score-card.team1::before { background: linear-gradient(135deg, rgba(76,201,240,0.13), transparent 60%); }
+  .score-card.team2::before { background: linear-gradient(135deg, rgba(246,200,95,0.15), transparent 60%); }
+
+  .score-card.active {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 28px rgba(255,255,255,0.04);
+  }
+
+  .score-card.active::before { opacity: 1; }
+  .score-card.team1.active { border-color: var(--blue); }
+  .score-card.team2.active { border-color: var(--gold); }
+
+  .team-label {
+    position: relative;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .score-card.team1 .team-name { color: var(--blue); }
+  .score-card.team2 .team-name { color: var(--gold); }
+
+  .team-name {
+    position: relative;
+    font-size: clamp(24px, 5vw, 34px);
+    font-weight: 900;
+    margin: 6px 0 10px;
+  }
+
+  .score {
+    position: relative;
+    font-size: clamp(72px, 16vw, 120px);
+    line-height: 0.9;
+    font-weight: 900;
+    margin: 18px 0;
+  }
+
+  .score-card.team1 .score { color: var(--blue); }
+  .score-card.team2 .score { color: var(--gold); }
+
+  .turn {
+    position: relative;
+    display: none;
+    margin-top: 12px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .score-card.active .turn { display: inline-block; }
+
+  .stage {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .timer {
+    width: min(260px, 100%);
+    margin: 0 auto 14px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    font-size: clamp(34px, 9vw, 56px);
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+  }
+
+  .timer.urgent {
+    border-color: var(--red);
+    color: var(--red);
+    animation: pulse 0.55s infinite alternate;
+  }
+
+  .timer.done {
+    border-color: var(--red);
+    background: rgba(255,77,95,0.13);
+    color: var(--red);
+  }
+
+  @keyframes pulse {
+    from { box-shadow: 0 0 0 rgba(255,77,95,0); }
+    to { box-shadow: 0 0 28px rgba(255,77,95,0.32); }
+  }
+
+  .movie-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 270px;
+    margin: 10px 0 14px;
+    padding: 24px 16px;
+    border: 1px solid rgba(246,200,95,0.28);
+    border-radius: 28px;
+    background:
+      linear-gradient(135deg, rgba(246,200,95,0.09), rgba(255,79,139,0.08)),
+      rgba(255,255,255,0.04);
+  }
+
+  .movie-label {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .movie-name {
+    min-height: 1.25em;
+    font-size: clamp(34px, 7vw, 68px);
+    line-height: 1.18;
+    font-weight: 900;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .movie-meta {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .pill {
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--muted);
+    background: rgba(0,0,0,0.18);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .pill.easy { color: var(--green); border-color: rgba(56,217,150,0.35); }
+  .pill.medium { color: var(--gold); border-color: rgba(246,200,95,0.35); }
+  .pill.hard { color: var(--pink); border-color: rgba(255,79,139,0.35); }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  button {
+    border: 0;
+    border-radius: 16px;
+    padding: 13px 12px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease;
+  }
+
+  button:hover:not(:disabled) { transform: translateY(-2px); }
+  button:disabled { opacity: 0.42; cursor: not-allowed; }
+
+  .primary { background: linear-gradient(135deg, var(--gold), var(--orange)); color: #160b00; box-shadow: 0 10px 25px rgba(255,138,61,0.22); }
+  .start { background: linear-gradient(135deg, var(--blue), #7ee8ff); color: #03121a; }
+  .correct { background: linear-gradient(135deg, var(--green), #9cffc9); color: #03140c; }
+  .skip { background: linear-gradient(135deg, var(--red), var(--pink)); color: #fff; }
+  .secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+  .wide { grid-column: span 2; }
+
+  .side-title {
+    color: var(--gold);
+    font-size: 19px;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .mini-text {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 14px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+  }
+
+  .stat {
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    padding: 12px 8px;
+  }
+
+  .stat b {
+    display: block;
+    color: #fff;
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat span { color: var(--muted); font-size: 12px; }
+
+  .history {
+    margin-top: 12px;
+    max-height: 270px;
+    overflow: auto;
+    padding-left: 4px;
+  }
+
+  .history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 10px 0;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: right;
+  }
+
+  .history-item strong { color: var(--text); font-size: 15px; }
+  .history-item .result { white-space: nowrap; font-weight: 900; }
+  .history-item .ok { color: var(--green); }
+  .history-item .bad { color: var(--red); }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    min-width: 240px;
+    max-width: calc(100vw - 28px);
+    padding: 13px 18px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(13,10,20,0.96);
+    color: var(--text);
+    font-weight: 900;
+    box-shadow: 0 18px 35px rgba(0,0,0,0.45);
+    transition: transform 0.24s ease;
+    z-index: 10;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 880px) {
+    .rules { grid-template-columns: repeat(2, 1fr); }
+    .board { grid-template-columns: 1fr; }
+    .stage { min-height: auto; order: -1; }
+    .score-card { min-height: 220px; }
+  }
+
+  @media (max-width: 520px) {
+    .app { padding-top: 14px; }
+    .rules { grid-template-columns: 1fr; }
+    .panel { padding: 14px; border-radius: 20px; }
+    .controls { grid-template-columns: 1fr; }
+    .wide { grid-column: auto; }
+    button { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <section class="hero">
+    <div class="kicker">🎬 لعبة تمثيل بدون كلام</div>
+    <h1>أفلام فوزي</h1>
+    <p class="subtitle">فريقين، اسم فيلم مصري قديم أو جديد يظهر على الشاشة، والفريق عنده دقيقة ونصف يمثل الاسم بدون كلام. كل إجابة صحيحة بنقطة.</p>
+
+    <div class="rules">
+      <div class="rule"><strong>1</strong><span>اختار الفريق اللي عليه الدور.</span></div>
+      <div class="rule"><strong>2</strong><span>اكشف اسم الفيلم للفريق.</span></div>
+      <div class="rule"><strong>3</strong><span>اضغط ابدأ لتشغيل مؤقت 1:30.</span></div>
+      <div class="rule"><strong>4</strong><span>صح تضيف نقطة، غلط / الوقت خلص ينقل الدور.</span></div>
+    </div>
+  </section>
+
+  <section class="board">
+    <aside class="panel score-card team1 active" id="team1Card" onclick="setTeam(1)">
+      <div class="team-label">اضغط لاختيار الدور</div>
+      <div class="team-name">فريق 1</div>
+      <div class="score" id="score1">0</div>
+      <div class="turn">▶ الدور الحالي</div>
+    </aside>
+
+    <section class="panel stage">
+      <div>
+        <div class="timer" id="timer">1:30</div>
+        <div class="movie-card">
+          <div class="movie-label" id="movieLabel">اضغط "اكشف فيلم" عشان تبدأ جولة جديدة</div>
+          <div class="movie-name" id="movieName">جاهزين؟</div>
+          <div class="movie-meta" id="movieMeta">
+            <span class="pill">120 فيلم في البركة</span>
+            <span class="pill">قديم وجديد</span>
+            <span class="pill">سهل وصعب</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="revealBtn" onclick="revealMovie()">🎞️ اكشف فيلم</button>
+        <button class="start" id="startBtn" onclick="startTimer()" disabled>⏱️ ابدأ 1:30</button>
+        <button class="correct" id="correctBtn" onclick="markCorrect()" disabled>✔ صح</button>
+        <button class="skip" id="skipBtn" onclick="skipMovie()" disabled>❌ غلط / الوقت خلص</button>
+        <button class="secondary wide" onclick="resetGame()">🔄 لعبة جديدة</button>
+      </div>
+    </section>
+
+    <aside class="panel score-card team2" id="team2Card" onclick="setTeam(2)">
+      <div class="team-label">اضغط لاختيار الدور</div>
+      <div class="team-name">فريق 2</div>
+      <div class="score" id="score2">0</div>
+      <div class="turn">▶ الدور الحالي</div>
+    </aside>
+  </section>
+
+  <section class="panel" style="margin-top: 14px;">
+    <div class="side-title">متابعة اللعبة</div>
+    <p class="mini-text">الأفلام لا تتكرر إلا بعد انتهاء البركة. لو الفريق ما عرفش أو الوقت خلص، الجولة تتحسب غلط وتقدر تكشف فيلم جديد للفريق التالي.</p>
+    <div class="stats">
+      <div class="stat"><b id="remainingCount">120</b><span>أفلام متبقية</span></div>
+      <div class="stat"><b id="playedCount">0</b><span>جولات ملعوبة</span></div>
+    </div>
+    <div class="history" id="history"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const movies = [
+  { name: 'الفيل الأزرق', era: 'جديد', difficulty: 'سهل' },
+  { name: 'ولاد رزق', era: 'جديد', difficulty: 'سهل' },
+  { name: 'كيرة والجن', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'الحريفة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'بيت الروبي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'البعبع', era: 'جديد', difficulty: 'سهل' },
+  { name: 'مرعي البريمو', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'شماريخ', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'فضل ونعمة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'تسليم أهالي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'من أجل زيكو', era: 'جديد', difficulty: 'سهل' },
+  { name: 'وقفة رجالة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'العارف', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'مش أنا', era: 'جديد', difficulty: 'سهل' },
+  { name: 'موسى', era: 'جديد', difficulty: 'صعب' },
+  { name: 'الغسالة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'البعض لا يذهب للمأذون مرتين', era: 'جديد', difficulty: 'صعب' },
+  { name: 'لص بغداد', era: 'جديد', difficulty: 'سهل' },
+  { name: 'نادي الرجال السري', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'الممر', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'تراب الماس', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'حرب كرموز', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'طلق صناعي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'الخلية', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'تصبح على خير', era: 'جديد', difficulty: 'سهل' },
+  { name: 'هيبتا', era: 'جديد', difficulty: 'صعب' },
+  { name: 'اشتباك', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'جحيم في الهند', era: 'جديد', difficulty: 'سهل' },
+  { name: 'لف ودوران', era: 'جديد', difficulty: 'سهل' },
+  { name: 'شد أجزاء', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'أهواك', era: 'جديد', difficulty: 'سهل' },
+  { name: 'زنقة ستات', era: 'جديد', difficulty: 'سهل' },
+  { name: 'الحرب العالمية الثالثة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'لا مؤاخذة', era: 'جديد', difficulty: 'صعب' },
+  { name: 'سمير أبو النيل', era: 'جديد', difficulty: 'سهل' },
+  { name: 'إكس لارج', era: 'جديد', difficulty: 'سهل' },
+  { name: 'أسماء', era: 'جديد', difficulty: 'صعب' },
+  { name: '678', era: 'جديد', difficulty: 'صعب' },
+  { name: 'عسل أسود', era: 'جديد', difficulty: 'سهل' },
+  { name: 'بلبل حيران', era: 'جديد', difficulty: 'سهل' },
+  { name: 'ولاد العم', era: 'جديد', difficulty: 'سهل' },
+  { name: 'طير إنت', era: 'جديد', difficulty: 'سهل' },
+  { name: 'إبراهيم الأبيض', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'آسف على الإزعاج', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'مرجان أحمد مرجان', era: 'جديد', difficulty: 'سهل' },
+  { name: 'كده رضا', era: 'جديد', difficulty: 'سهل' },
+  { name: 'عمارة يعقوبيان', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'ظرف طارق', era: 'جديد', difficulty: 'سهل' },
+  { name: 'زكي شان', era: 'جديد', difficulty: 'سهل' },
+  { name: 'حريم كريم', era: 'جديد', difficulty: 'سهل' },
+  { name: 'ملاكي إسكندرية', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'أبو علي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'تيتو', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'غبي منه فيه', era: 'جديد', difficulty: 'سهل' },
+  { name: 'عوكل', era: 'جديد', difficulty: 'سهل' },
+  { name: 'سهر الليالي', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'اللي بالي بالك', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'مافيا', era: 'جديد', difficulty: 'سهل' },
+  { name: 'الناظر', era: 'جديد', difficulty: 'سهل' },
+  { name: 'همام في أمستردام', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'صعيدي في الجامعة الأمريكية', era: 'جديد', difficulty: 'سهل' },
+  { name: 'إسماعيلية رايح جاي', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'عبود على الحدود', era: 'جديد', difficulty: 'سهل' },
+  { name: 'النوم في العسل', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'الإرهاب والكباب', era: 'قديم', difficulty: 'سهل' },
+  { name: 'اللعب مع الكبار', era: 'قديم', difficulty: 'سهل' },
+  { name: 'بخيت وعديلة', era: 'قديم', difficulty: 'سهل' },
+  { name: 'طيور الظلام', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'الإرهابي', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'المنسي', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الجزيرة', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'الكيت كات', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'آيس كريم في جليم', era: 'قديم', difficulty: 'سهل' },
+  { name: 'سمع هس', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'يا دنيا يا غرامي', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'شمس الزناتي', era: 'قديم', difficulty: 'سهل' },
+  { name: 'البيضة والحجر', era: 'قديم', difficulty: 'سهل' },
+  { name: 'كراكون في الشارع', era: 'قديم', difficulty: 'سهل' },
+  { name: 'سلام يا صاحبي', era: 'قديم', difficulty: 'سهل' },
+  { name: 'البيه البواب', era: 'قديم', difficulty: 'سهل' },
+  { name: 'النمر والأنثى', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'البريء', era: 'قديم', difficulty: 'صعب' },
+  { name: 'العار', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الكيف', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'الحريف', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'الإنس والجن', era: 'قديم', difficulty: 'سهل' },
+  { name: 'خمسة باب', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'غريب في بيتي', era: 'قديم', difficulty: 'سهل' },
+  { name: 'حب في الزنزانة', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'الراقصة والسياسي', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الراقصة والطبال', era: 'قديم', difficulty: 'سهل' },
+  { name: 'حتى لا يطير الدخان', era: 'قديم', difficulty: 'صعب' },
+  { name: 'المشبوه', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'رجب فوق صفيح ساخن', era: 'قديم', difficulty: 'سهل' },
+  { name: 'إسكندرية ليه', era: 'قديم', difficulty: 'صعب' },
+  { name: 'خلي بالك من زوزو', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الكرنك', era: 'قديم', difficulty: 'صعب' },
+  { name: 'أميرة حبي أنا', era: 'قديم', difficulty: 'سهل' },
+  { name: 'ثرثرة فوق النيل', era: 'قديم', difficulty: 'صعب' },
+  { name: 'شيء من الخوف', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'أرض النفاق', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'مراتي مدير عام', era: 'قديم', difficulty: 'سهل' },
+  { name: 'صغيرة على الحب', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الزوجة الثانية', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'معبودة الجماهير', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الحرام', era: 'قديم', difficulty: 'صعب' },
+  { name: 'بين القصرين', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'دعاء الكروان', era: 'قديم', difficulty: 'صعب' },
+  { name: 'باب الحديد', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'رد قلبي', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'إشاعة حب', era: 'قديم', difficulty: 'سهل' },
+  { name: 'ابن حميدو', era: 'قديم', difficulty: 'سهل' },
+  { name: 'العتبة الخضراء', era: 'قديم', difficulty: 'سهل' },
+  { name: 'بين السما والأرض', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'سر طاقية الإخفاء', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الزوجة 13', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الشموع السوداء', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'أبي فوق الشجرة', era: 'قديم', difficulty: 'سهل' },
+  { name: 'غزل البنات', era: 'قديم', difficulty: 'سهل' },
+  { name: 'سي عمر', era: 'قديم', difficulty: 'متوسط' }
+];
+
+let team = 1;
+let scores = { 1: 0, 2: 0 };
+let decksByDifficulty = {};
+let teamDifficultyCounts = {};
+let currentMovie = null;
+let roundActive = false;
+let timerInterval = null;
+let timeLeft = 90;
+let played = 0;
+const difficultyLevels = ['سهل', 'متوسط', 'صعب'];
+
+const timerEl = document.getElementById('timer');
+const movieLabelEl = document.getElementById('movieLabel');
+const movieNameEl = document.getElementById('movieName');
+const movieMetaEl = document.getElementById('movieMeta');
+const historyEl = document.getElementById('history');
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function buildDecks() {
+  decksByDifficulty = difficultyLevels.reduce((decks, level) => {
+    decks[level] = shuffle(movies.filter(movie => movie.difficulty === level));
+    return decks;
+  }, {});
+}
+
+function resetDifficultyCounts() {
+  teamDifficultyCounts = {
+    1: { 'سهل': 0, 'متوسط': 0, 'صعب': 0 },
+    2: { 'سهل': 0, 'متوسط': 0, 'صعب': 0 }
+  };
+}
+
+function remainingMovies() {
+  return difficultyLevels.reduce((total, level) => total + decksByDifficulty[level].length, 0);
+}
+
+function drawMovieForTeam() {
+  const otherTeam = team === 1 ? 2 : 1;
+  const available = difficultyLevels.filter(level => decksByDifficulty[level].length > 0);
+
+  if (available.length === 0) return null;
+
+  const catchUpLevels = available.filter(level => teamDifficultyCounts[team][level] < teamDifficultyCounts[otherTeam][level]);
+  const evenLevels = available.filter(level => teamDifficultyCounts[team][level] === teamDifficultyCounts[otherTeam][level]);
+  const candidates = catchUpLevels.length > 0 ? catchUpLevels : (evenLevels.length > 0 ? evenLevels : available);
+  const selectedLevel = candidates[Math.floor(Math.random() * candidates.length)];
+  teamDifficultyCounts[team][selectedLevel] += 1;
+
+  return decksByDifficulty[selectedLevel].pop();
+}
+
+function setTeam(nextTeam) {
+  if (roundActive) {
+    showToast('استنى الجولة تخلص الأول');
+    return;
+  }
+  team = nextTeam;
+  document.getElementById('team1Card').classList.toggle('active', team === 1);
+  document.getElementById('team2Card').classList.toggle('active', team === 2);
+}
+
+function revealMovie() {
+  if (roundActive) {
+    showToast('الجولة شغالة بالفعل');
+    return;
+  }
+
+  if (remainingMovies() === 0) {
+    buildDecks();
+    resetDifficultyCounts();
+    showToast('خلصت البركة، بدأنا خلط جديد');
+  }
+
+  currentMovie = drawMovieForTeam();
+  resetTimer();
+  movieLabelEl.textContent = `الدور على فريق ${team}`;
+  movieNameEl.textContent = currentMovie.name;
+  movieMetaEl.innerHTML = `
+    <span class="pill ${difficultyClass(currentMovie.difficulty)}">${currentMovie.difficulty}</span>
+    <span class="pill">${currentMovie.era}</span>
+    <span class="pill">بدون كلام</span>
+  `;
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('correctBtn').disabled = true;
+  document.getElementById('skipBtn').disabled = false;
+  document.getElementById('revealBtn').disabled = true;
+  updateStats();
+}
+
+function difficultyClass(level) {
+  if (level === 'سهل') return 'easy';
+  if (level === 'متوسط') return 'medium';
+  return 'hard';
+}
+
+function startTimer() {
+  if (!currentMovie || roundActive) return;
+  roundActive = true;
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('correctBtn').disabled = false;
+  document.getElementById('skipBtn').disabled = false;
+  timerEl.className = 'timer';
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    renderTimer();
+
+    if (timeLeft <= 10 && timeLeft > 0) {
+      timerEl.className = 'timer urgent';
+      beep();
+    }
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerEl.className = 'timer done';
+      finishRound(false, 'انتهى الوقت');
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  roundActive = false;
+  timeLeft = 90;
+  timerEl.className = 'timer';
+  renderTimer();
+}
+
+function renderTimer() {
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = String(timeLeft % 60).padStart(2, '0');
+  timerEl.textContent = `${minutes}:${seconds}`;
+}
+
+function markCorrect() {
+  if (!currentMovie) return;
+  scores[team] += 1;
+  document.getElementById(`score${team}`).textContent = scores[team];
+  finishRound(true, 'صح');
+  successSound();
+}
+
+function skipMovie() {
+  if (!currentMovie) return;
+  finishRound(false, roundActive ? 'غلط / الوقت خلص' : 'اتلغت');
+}
+
+function finishRound(success, label) {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  roundActive = false;
+  played++;
+  addHistory(currentMovie, success, label, team);
+  currentMovie = null;
+  document.getElementById('revealBtn').disabled = false;
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('correctBtn').disabled = true;
+  document.getElementById('skipBtn').disabled = true;
+  setTeam(team === 1 ? 2 : 1);
+  updateStats();
+  showToast(success ? 'نقطة اتحسبت!' : label);
+}
+
+function addHistory(movie, success, label, playedTeam) {
+  const empty = historyEl.querySelector('.empty-history');
+  if (empty) empty.remove();
+
+  const item = document.createElement('div');
+  item.className = 'history-item';
+  item.innerHTML = `
+    <div><strong>${movie.name}</strong><br>فريق ${playedTeam} • ${movie.difficulty} • ${movie.era}</div>
+    <span class="result ${success ? 'ok' : 'bad'}">${success ? '✔' : '✖'} ${label}</span>
+  `;
+  historyEl.prepend(item);
+}
+
+function updateStats() {
+  document.getElementById('remainingCount').textContent = remainingMovies();
+  document.getElementById('playedCount').textContent = played;
+}
+
+function resetGame() {
+  scores = { 1: 0, 2: 0 };
+  played = 0;
+  currentMovie = null;
+  buildDecks();
+  resetDifficultyCounts();
+  resetTimer();
+  document.getElementById('score1').textContent = '0';
+  document.getElementById('score2').textContent = '0';
+  document.getElementById('revealBtn').disabled = false;
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('correctBtn').disabled = true;
+  document.getElementById('skipBtn').disabled = true;
+  movieLabelEl.textContent = 'اضغط "اكشف فيلم" عشان تبدأ جولة جديدة';
+  movieNameEl.textContent = 'جاهزين؟';
+  movieMetaEl.innerHTML = '<span class="pill">120 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
+  historyEl.innerHTML = '<div class="mini-text empty-history">لسه مفيش جولات.</div>';
+  setTeam(1);
+  updateStats();
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timeout);
+  showToast.timeout = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.value = 0.12;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
+    osc.stop(ctx.currentTime + 0.11);
+  } catch (e) {
+    // Audio is optional.
+  }
+}
+
+function successSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523.25, 659.25, 783.99].forEach((freq, index) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      const start = ctx.currentTime + index * 0.08;
+      gain.gain.setValueAtTime(0.001, start);
+      gain.gain.exponentialRampToValueAtTime(0.14, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.16);
+      osc.start(start);
+      osc.stop(start + 0.18);
+    });
+  } catch (e) {
+    // Audio is optional.
+  }
+}
+
+buildDecks();
+resetGame();
+</script>
+</body>
+</html>
