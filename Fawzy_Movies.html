@@ -194,6 +194,44 @@
 
   .score-card.active .turn { display: inline-block; }
 
+  .team-setup {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0 auto 14px;
+  }
+
+  .team-input-wrap {
+    text-align: right;
+  }
+
+  .team-input-wrap label {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 6px 7px;
+  }
+
+  .team-input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .team-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(246,200,95,0.13);
+  }
+
   .stage {
     min-height: 500px;
     display: flex;
@@ -403,6 +441,7 @@
   @media (max-width: 520px) {
     .app { padding-top: 14px; }
     .rules { grid-template-columns: 1fr; }
+    .team-setup { grid-template-columns: 1fr; }
     .panel { padding: 14px; border-radius: 20px; }
     .controls { grid-template-columns: 1fr; }
     .wide { grid-column: auto; }
@@ -425,10 +464,21 @@
     </div>
   </section>
 
+  <section class="panel team-setup">
+    <div class="team-input-wrap">
+      <label for="team1Input">اسم الفريق الأول</label>
+      <input class="team-input" id="team1Input" type="text" value="فريق 1" maxlength="24" oninput="updateTeamNames()">
+    </div>
+    <div class="team-input-wrap">
+      <label for="team2Input">اسم الفريق الثاني</label>
+      <input class="team-input" id="team2Input" type="text" value="فريق 2" maxlength="24" oninput="updateTeamNames()">
+    </div>
+  </section>
+
   <section class="board">
     <aside class="panel score-card team1 active" id="team1Card" onclick="setTeam(1)">
       <div class="team-label">اضغط لاختيار الدور</div>
-      <div class="team-name">فريق 1</div>
+      <div class="team-name" id="team1Name">فريق 1</div>
       <div class="score" id="score1">0</div>
       <div class="turn">▶ الدور الحالي</div>
     </aside>
@@ -458,7 +508,7 @@
 
     <aside class="panel score-card team2" id="team2Card" onclick="setTeam(2)">
       <div class="team-label">اضغط لاختيار الدور</div>
-      <div class="team-name">فريق 2</div>
+      <div class="team-name" id="team2Name">فريق 2</div>
       <div class="score" id="score2">0</div>
       <div class="turn">▶ الدور الحالي</div>
     </aside>
@@ -618,6 +668,18 @@ const movieNameEl = document.getElementById('movieName');
 const movieMetaEl = document.getElementById('movieMeta');
 const historyEl = document.getElementById('history');
 
+function getTeamName(teamNumber) {
+  const input = document.getElementById(`team${teamNumber}Input`);
+  const fallback = `فريق ${teamNumber}`;
+  return input.value.trim() || fallback;
+}
+
+function updateTeamNames() {
+  document.getElementById('team1Name').textContent = getTeamName(1);
+  document.getElementById('team2Name').textContent = getTeamName(2);
+  if (currentMovie) movieLabelEl.textContent = `الدور على ${getTeamName(team)}`;
+}
+
 function shuffle(items) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -683,7 +745,7 @@ function revealMovie() {
 
   currentMovie = drawMovieForTeam();
   resetTimer();
-  movieLabelEl.textContent = `الدور على فريق ${team}`;
+  movieLabelEl.textContent = `الدور على ${getTeamName(team)}`;
   movieNameEl.textContent = currentMovie.name;
   movieMetaEl.innerHTML = `
     <span class="pill ${difficultyClass(currentMovie.difficulty)}">${currentMovie.difficulty}</span>
@@ -780,7 +842,7 @@ function addHistory(movie, success, label, playedTeam) {
   const item = document.createElement('div');
   item.className = 'history-item';
   item.innerHTML = `
-    <div><strong>${movie.name}</strong><br>فريق ${playedTeam} • ${movie.difficulty} • ${movie.era}</div>
+    <div><strong>${movie.name}</strong><br>${getTeamName(playedTeam)} • ${movie.difficulty} • ${movie.era}</div>
     <span class="result ${success ? 'ok' : 'bad'}">${success ? '✔' : '✖'} ${label}</span>
   `;
   historyEl.prepend(item);
@@ -808,6 +870,7 @@ function resetGame() {
   movieNameEl.textContent = 'جاهزين؟';
   movieMetaEl.innerHTML = '<span class="pill">120 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
   historyEl.innerHTML = '<div class="mini-text empty-history">لسه مفيش جولات.</div>';
+  updateTeamNames();
   setTeam(1);
   updateStats();
 }
