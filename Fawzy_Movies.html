@@ -768,6 +768,8 @@ function difficultyClass(level) {
 function startTimer() {
   if (!currentMovie || roundActive) return;
   roundActive = true;
+  movieNameEl.textContent = 'الفيلم مخفي لحد نهاية الوقت';
+  movieMetaEl.innerHTML = '<span class="pill">وقت التمثيل بدأ</span><span class="pill">بدون كلام</span>';
   document.getElementById('startBtn').disabled = true;
   document.getElementById('correctBtn').disabled = false;
   document.getElementById('skipBtn').disabled = false;
@@ -825,6 +827,12 @@ function finishRound(success, label) {
   timerInterval = null;
   roundActive = false;
   played++;
+  movieNameEl.textContent = currentMovie.name;
+  movieMetaEl.innerHTML = `
+    <span class="pill ${difficultyClass(currentMovie.difficulty)}">${currentMovie.difficulty}</span>
+    <span class="pill">${currentMovie.era}</span>
+    <span class="pill">انتهت الجولة</span>
+  `;
   addHistory(currentMovie, success, label, team);
   currentMovie = null;
   document.getElementById('revealBtn').disabled = false;
