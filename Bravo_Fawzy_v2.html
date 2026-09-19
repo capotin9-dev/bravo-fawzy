@@ -692,10 +692,17 @@ function pickRandom(arr, n) {
 function selectQuestions() {
   gameQuestions = {};
   selectedCats.forEach(idx => {
-    const pool = allCategories[idx].questions.filter(
+    let available = allCategories[idx].questions.filter(
       q => !usedQuestions[idx]?.has(q.q)
     );
-    gameQuestions[idx] = pickRandom(pool, Math.min(5, pool.length));
+    if (available.length < 5) {
+      usedQuestions[idx] = new Set();
+      available = allCategories[idx].questions;
+    }
+    const chosen = pickRandom(available, 5);
+    if (!usedQuestions[idx]) usedQuestions[idx] = new Set();
+    chosen.forEach(q => usedQuestions[idx].add(q.q));
+    gameQuestions[idx] = chosen;
   });
 }
 
