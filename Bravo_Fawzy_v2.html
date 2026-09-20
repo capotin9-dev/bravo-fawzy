@@ -378,6 +378,7 @@
   <div class="sel-counter">اخترت <span id="countDisplay">0</span> من 5</div>
   <div class="categories-grid" id="categoriesGrid"></div>
   <button class="start-btn" id="startBtn" onclick="startGame()">🚀 ابدأ اللعبة</button>
+  <button class="btn btn-restart" onclick="resetPlayedQuestions()" style="margin-top:12px;">♻️ مسح سجل الأسئلة المستخدمة</button>
 </div>
 
 <!-- ══════════════════ GAME SCREEN ══════════════════ -->
@@ -713,6 +714,26 @@ const allCategories = [
 let gameQuestions = {};
 let usedQuestions = {};  // { categoryIdx: Set of question texts }
 let lastShown = {};      // { categoryIdx: [question texts of the current board] }
+const USED_STORAGE_KEY = 'bravoFawzyUsedQuestions';
+
+function loadUsedQuestions() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(USED_STORAGE_KEY) || '{}');
+    return Object.fromEntries(Object.entries(saved).map(([idx, arr]) => [idx, new Set(arr)]));
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveUsedQuestions() {
+  const data = Object.fromEntries(Object.entries(usedQuestions).map(([idx, set]) => [idx, [...set]]));
+  localStorage.setItem(USED_STORAGE_KEY, JSON.stringify(data));
+}
+
+function availableQuestions(idx) {
+  const played = usedQuestions[idx] || new Set();
+  return allCategories[idx].questions.filter(q => !played.has(q.q));
+}
 
 function pickRandom(arr, n) {
   const shuffled = [...arr].sort(() => Math.random() - 0.5);
@@ -722,18 +743,14 @@ function pickRandom(arr, n) {
 function selectQuestions() {
   gameQuestions = {};
   selectedCats.forEach(idx => {
-    const pool = allCategories[idx].questions;
-    let available = pool.filter(q => !usedQuestions[idx]?.has(q.q));
+    const available = availableQuestions(idx);
     if (available.length < 5) {
-      const prevRound = lastShown[idx] || [];
-      available = pool.filter(q => !prevRound.includes(q.q));
+      throw new Error(`فئة ${allCategories[idx].name} فاضل فيها ${available.length} أسئلة غير مستخدمة فقط`);
     }
     const chosen = pickRandom(available, 5);
     const top = chosen.filter(q => q.top);
     const rest = chosen.filter(q => !q.top).slice(0, 5 - top.length);
     const ordered = [...rest, ...top];
-    if (!usedQuestions[idx]) usedQuestions[idx] = new Set();
-    chosen.forEach(q => usedQuestions[idx].add(q.q));
     lastShown[idx] = chosen.map(q => q.q);
     gameQuestions[idx] = ordered;
   });
@@ -752,10 +769,13 @@ function buildSelectionScreen() {
     const card = document.createElement('div');
     card.className = 'cat-card';
     card.dataset.idx = idx;
+    const remaining = availableQuestions(idx).length;
+    if (remaining < 5) card.classList.add('disabled');
     card.innerHTML = `
       <div class="check-badge">✓</div>
       <span class="cat-emoji">${cat.emoji}</span>
       <div class="cat-name">${cat.name}</div>
+      <div style="font-size:12px;color:var(--dim);margin-top:5px;">${remaining} سؤال متاح</div>
     `;
     card.onclick = () => toggleCat(idx, card);
     grid.appendChild(card);
@@ -763,6 +783,10 @@ function buildSelectionScreen() {
 }
 
 function toggleCat(idx, card) {
+  if (availableQuestions(idx).length < 5) {
+    showToast('الفئة دي خلصت تقريباً. امسح سجل الأسئلة أو اختار فئة تانية.', 'wrong');
+    return;
+  }
   const pos = selectedCats.indexOf(idx);
   if (pos !== -1) {
     selectedCats.splice(pos, 1);
@@ -814,7 +838,12 @@ function startGame() {
   document.getElementById('timerWrap').className = 'timer-wrap';
   document.getElementById('timerVal').textContent = '60';
 
-  selectQuestions();
+  try {
+    selectQuestions();
+  } catch (e) {
+    showToast(e.message, 'wrong');
+    return;
+  }
   buildTable();
   document.getElementById('selectionScreen').style.display = 'none';
   document.getElementById('gameScreen').style.display = 'block';
@@ -861,6 +890,7 @@ function askQuestion(cell) {
   const catIdx = selectedCats[cell.cellIndex];
   if (!usedQuestions[catIdx]) usedQuestions[catIdx] = new Set();
   usedQuestions[catIdx].add(currentQuestion.q);
+  saveUsedQuestions();
 
   cell.classList.add('used');
   cell.onclick = null;
@@ -994,20 +1024,19 @@ function wrong() {
 }
 
 function renewQuestions() {
-  selectQuestions();
-  buildTable();
-  team = 0;
-  scores = { 1: 0, 2: 0 };
-  currentQuestion = null;
-  document.getElementById('score1').textContent = '0';
-  document.getElementById('score2').textContent = '0';
-  document.getElementById('card1').classList.remove('active');
-  document.getElementById('card2').classList.remove('active');
-  document.getElementById('questionBox').innerHTML = '<div class="placeholder">اختر فريق ثم اضغط على النقاط لتبدأ اللعبة ⬆️</div>';
-  stopTimer();
-  document.getElementById('timerWrap').className = 'timer-wrap';
-  document.getElementById('timerVal').textContent = '60';
-  showToast('🔄 تم تجديد الأسئلة للفئات المختارة!', 'correct');
+  goBack();
+  showToast('🔄 اختار فئات جديدة — الأسئلة اللي اتلعبت مش هتظهر تاني', 'correct');
+}
+
+function resetPlayedQuestions() {
+  usedQuestions = {};
+  lastShown = {};
+  localStorage.removeItem(USED_STORAGE_KEY);
+  selectedCats = [];
+  document.getElementById('countDisplay').textContent = '0';
+  document.getElementById('startBtn').classList.remove('ready');
+  buildSelectionScreen();
+  showToast('♻️ تم مسح سجل الأسئلة المستخدمة', 'correct');
 }
 
 function goBack() {
@@ -1019,6 +1048,7 @@ function goBack() {
   document.querySelectorAll('.cat-card').forEach(c => {
     c.classList.remove('selected', 'disabled');
   });
+  buildSelectionScreen();
   document.getElementById('gameScreen').style.display = 'none';
   document.getElementById('selectionScreen').style.display = 'flex';
 }
@@ -1030,6 +1060,7 @@ function showToast(msg, type) {
   setTimeout(() => { t.className = ''; }, 2800);
 }
 
+usedQuestions = loadUsedQuestions();
 buildSelectionScreen();
 </script>
 </body>
