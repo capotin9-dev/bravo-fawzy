@@ -32,15 +32,13 @@ Jeopardy-style Arabic trivia game with 14 categories, 10-question pools per cate
 - ✅ No auto-deploy — user explicitly approves each deploy.
 
 ### Pending
-- User review and approval before Netlify deploy.
+- User review and approval before GitHub Pages deploy.
 
-## Deploy (Netlify — primary)
-```bash
-cp Bravo_Fawzy_v2.html index.html && netlify deploy --prod --dir=.
-```
-Production URL: https://bravo-fawzy-game.netlify.app
+## Deploy (Netlify — retired / do not use)
+Do **not** publish to Netlify anymore. User no longer uses Netlify for this game.
+Old URL (do not deploy): https://bravo-fawzy-game.netlify.app
 
-## Deploy (GitHub Pages — backup)
+## Deploy (GitHub Pages — primary)
 Only deploy when user explicitly asks.
 ```bash
 cp Bravo_Fawzy_v2.html index.html && git add index.html && git commit -m "update game" && git push
