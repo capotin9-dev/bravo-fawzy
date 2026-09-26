@@ -490,7 +490,7 @@
           <div class="movie-label" id="movieLabel">اضغط "اكشف فيلم" عشان تبدأ جولة جديدة</div>
           <div class="movie-name" id="movieName">جاهزين؟</div>
           <div class="movie-meta" id="movieMeta">
-            <span class="pill">117 فيلم في البركة</span>
+            <span class="pill">140 فيلم في البركة</span>
             <span class="pill">قديم وجديد</span>
             <span class="pill">سهل وصعب</span>
           </div>
@@ -500,6 +500,7 @@
       <div class="controls">
         <button class="primary" id="revealBtn" onclick="revealMovie()">🎞️ اكشف فيلم</button>
         <button class="start" id="startBtn" onclick="startTimer()" disabled>⏱️ ابدأ 1:30</button>
+        <button class="secondary" id="changeBtn" onclick="changeMovie()" disabled>🎲 تغيير الفيلم</button>
         <button class="correct" id="correctBtn" onclick="markCorrect()" disabled>✔ صح</button>
         <button class="skip" id="skipBtn" onclick="skipMovie()" disabled>❌ غلط / الوقت خلص</button>
         <button class="secondary wide" onclick="resetGame()">🔄 لعبة جديدة</button>
@@ -518,7 +519,7 @@
     <div class="side-title">متابعة اللعبة</div>
     <p class="mini-text">الأفلام لا تتكرر بين الفريقين في نفس اللعبة. لو الفريق ما عرفش أو الوقت خلص، الجولة تتحسب غلط وتقدر تكشف فيلم جديد للفريق التالي.</p>
     <div class="stats">
-      <div class="stat"><b id="remainingCount">117</b><span>أفلام متبقية</span></div>
+      <div class="stat"><b id="remainingCount">140</b><span>أفلام متبقية</span></div>
       <div class="stat"><b id="playedCount">0</b><span>جولات ملعوبة</span></div>
     </div>
     <div class="history" id="history"></div>
@@ -545,7 +546,6 @@ const movies = [
   { name: 'البعض لا يذهب للمأذون مرتين', era: 'جديد', difficulty: 'صعب' },
   { name: 'لص بغداد', era: 'جديد', difficulty: 'سهل' },
   { name: 'نادي الرجال السري', era: 'جديد', difficulty: 'متوسط' },
-  { name: 'الممر', era: 'جديد', difficulty: 'متوسط' },
   { name: 'تراب الماس', era: 'جديد', difficulty: 'متوسط' },
   { name: 'حرب كرموز', era: 'جديد', difficulty: 'متوسط' },
   { name: 'طلق صناعي', era: 'جديد', difficulty: 'سهل' },
@@ -562,8 +562,6 @@ const movies = [
   { name: 'لا مؤاخذة', era: 'جديد', difficulty: 'صعب' },
   { name: 'سمير أبو النيل', era: 'جديد', difficulty: 'سهل' },
   { name: 'إكس لارج', era: 'جديد', difficulty: 'سهل' },
-  { name: 'أسماء', era: 'جديد', difficulty: 'صعب' },
-  { name: '678', era: 'جديد', difficulty: 'صعب' },
   { name: 'عسل أسود', era: 'جديد', difficulty: 'سهل' },
   { name: 'بلبل حيران', era: 'جديد', difficulty: 'سهل' },
   { name: 'ولاد العم', era: 'جديد', difficulty: 'سهل' },
@@ -572,7 +570,6 @@ const movies = [
   { name: 'آسف على الإزعاج', era: 'جديد', difficulty: 'متوسط' },
   { name: 'مرجان أحمد مرجان', era: 'جديد', difficulty: 'سهل' },
   { name: 'كده رضا', era: 'جديد', difficulty: 'سهل' },
-  { name: 'عمارة يعقوبيان', era: 'جديد', difficulty: 'متوسط' },
   { name: 'ظرف طارق', era: 'جديد', difficulty: 'سهل' },
   { name: 'زكي شان', era: 'جديد', difficulty: 'سهل' },
   { name: 'حريم كريم', era: 'جديد', difficulty: 'سهل' },
@@ -587,7 +584,6 @@ const movies = [
   { name: 'الناظر', era: 'جديد', difficulty: 'سهل' },
   { name: 'همام في أمستردام', era: 'جديد', difficulty: 'متوسط' },
   { name: 'صعيدي في الجامعة الأمريكية', era: 'جديد', difficulty: 'سهل' },
-  { name: 'إسماعيلية رايح جاي', era: 'جديد', difficulty: 'متوسط' },
   { name: 'عبود على الحدود', era: 'جديد', difficulty: 'سهل' },
   { name: 'النوم في العسل', era: 'قديم', difficulty: 'متوسط' },
   { name: 'الإرهاب والكباب', era: 'قديم', difficulty: 'سهل' },
@@ -607,7 +603,6 @@ const movies = [
   { name: 'سلام يا صاحبي', era: 'قديم', difficulty: 'سهل' },
   { name: 'البيه البواب', era: 'قديم', difficulty: 'سهل' },
   { name: 'النمر والأنثى', era: 'قديم', difficulty: 'متوسط' },
-  { name: 'البريء', era: 'قديم', difficulty: 'صعب' },
   { name: 'العار', era: 'قديم', difficulty: 'صعب' },
   { name: 'الكيف', era: 'قديم', difficulty: 'متوسط' },
   { name: 'الحريف', era: 'قديم', difficulty: 'متوسط' },
@@ -617,7 +612,6 @@ const movies = [
   { name: 'حب في الزنزانة', era: 'قديم', difficulty: 'متوسط' },
   { name: 'الراقصة والسياسي', era: 'قديم', difficulty: 'سهل' },
   { name: 'الراقصة والطبال', era: 'قديم', difficulty: 'سهل' },
-  { name: 'حتى لا يطير الدخان', era: 'قديم', difficulty: 'صعب' },
   { name: 'المشبوه', era: 'قديم', difficulty: 'متوسط' },
   { name: 'رجب فوق صفيح ساخن', era: 'قديم', difficulty: 'سهل' },
   { name: 'إسكندرية ليه', era: 'قديم', difficulty: 'صعب' },
@@ -631,7 +625,6 @@ const movies = [
   { name: 'صغيرة على الحب', era: 'قديم', difficulty: 'سهل' },
   { name: 'الزوجة الثانية', era: 'قديم', difficulty: 'متوسط' },
   { name: 'معبودة الجماهير', era: 'قديم', difficulty: 'سهل' },
-  { name: 'الحرام', era: 'قديم', difficulty: 'صعب' },
   { name: 'بين القصرين', era: 'قديم', difficulty: 'متوسط' },
   { name: 'دعاء الكروان', era: 'قديم', difficulty: 'صعب' },
   { name: 'باب الحديد', era: 'قديم', difficulty: 'متوسط' },
@@ -645,7 +638,38 @@ const movies = [
   { name: 'الشموع السوداء', era: 'قديم', difficulty: 'متوسط' },
   { name: 'أبي فوق الشجرة', era: 'قديم', difficulty: 'سهل' },
   { name: 'غزل البنات', era: 'قديم', difficulty: 'سهل' },
-  { name: 'سي عمر', era: 'قديم', difficulty: 'متوسط' }
+  { name: 'سي عمر', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'زوجة رجل مهم', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الاختيار', era: 'قديم', difficulty: 'صعب' },
+  { name: 'المومياء', era: 'قديم', difficulty: 'صعب' },
+  { name: 'أحلام هند وكاميليا', era: 'قديم', difficulty: 'صعب' },
+  { name: 'عودة الابن الضال', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الطوق والأسورة', era: 'قديم', difficulty: 'صعب' },
+  { name: 'السقا مات', era: 'قديم', difficulty: 'صعب' },
+  { name: 'ليل وقضبان', era: 'قديم', difficulty: 'صعب' },
+  { name: 'المذنبون', era: 'قديم', difficulty: 'صعب' },
+  { name: 'على من نطلق الرصاص', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الهروب', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'ضد الحكومة', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'أهل القمة', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'موعد على العشاء', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'سواق الأتوبيس', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'عصابة حمادة وتوتو', era: 'قديم', difficulty: 'سهل' },
+  { name: 'سفير جهنم', era: 'قديم', difficulty: 'صعب' },
+  { name: 'إسماعيل يس في مستشفى المجانين', era: 'قديم', difficulty: 'سهل' },
+  { name: 'صاحب الجلالة', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'شنبو في المصيدة', era: 'قديم', difficulty: 'سهل' },
+  { name: 'البحث عن فضيحة', era: 'قديم', difficulty: 'سهل' },
+  { name: 'تجيبها كده تجيلها كده هي كده', era: 'قديم', difficulty: 'صعب' },
+  { name: 'عش الغراب', era: 'جديد', difficulty: 'صعب' },
+  { name: 'لا تراجع ولا استسلام', era: 'جديد', difficulty: 'سهل' },
+  { name: 'سمير وشهير وبهير', era: 'جديد', difficulty: 'سهل' },
+  { name: 'فاصل من اللحظات اللذيذة', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'بنك الحظ', era: 'جديد', difficulty: 'سهل' },
+  { name: 'إكس مراتي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'الدادة دودي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'طائر الليل الحزين', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الرجل العناب', era: 'جديد', difficulty: 'متوسط' }
 ];
 
 let team = 1;
@@ -719,6 +743,13 @@ function drawMovieForTeam() {
   return decksByDifficulty[selectedLevel].pop();
 }
 
+function returnMovieToDeck(movie) {
+  if (!movie) return;
+  decksByDifficulty[movie.difficulty].push(movie);
+  decksByDifficulty[movie.difficulty] = shuffle(decksByDifficulty[movie.difficulty]);
+  teamDifficultyCounts[team][movie.difficulty] = Math.max(0, teamDifficultyCounts[team][movie.difficulty] - 1);
+}
+
 function setTeam(nextTeam) {
   if (roundActive) {
     showToast('استنى الجولة تخلص الأول');
@@ -751,6 +782,27 @@ function revealMovie() {
     <span class="pill">بدون كلام</span>
   `;
   document.getElementById('startBtn').disabled = false;
+  document.getElementById('changeBtn').disabled = false;
+  document.getElementById('correctBtn').disabled = true;
+  document.getElementById('skipBtn').disabled = false;
+  document.getElementById('revealBtn').disabled = true;
+  updateStats();
+}
+
+function changeMovie() {
+  if (!currentMovie) return;
+  returnMovieToDeck(currentMovie);
+  resetTimer();
+  currentMovie = drawMovieForTeam();
+  movieLabelEl.textContent = `الدور على ${getTeamName(team)}`;
+  movieNameEl.textContent = currentMovie.name;
+  movieMetaEl.innerHTML = `
+    <span class="pill ${difficultyClass(currentMovie.difficulty)}">${currentMovie.difficulty}</span>
+    <span class="pill">${currentMovie.era}</span>
+    <span class="pill">فيلم بديل</span>
+  `;
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('changeBtn').disabled = false;
   document.getElementById('correctBtn').disabled = true;
   document.getElementById('skipBtn').disabled = false;
   document.getElementById('revealBtn').disabled = true;
@@ -769,6 +821,7 @@ function startTimer() {
   movieNameEl.textContent = 'الفيلم مخفي لحد نهاية الوقت';
   movieMetaEl.innerHTML = '<span class="pill">وقت التمثيل بدأ</span><span class="pill">بدون كلام</span>';
   document.getElementById('startBtn').disabled = true;
+  document.getElementById('changeBtn').disabled = false;
   document.getElementById('correctBtn').disabled = false;
   document.getElementById('skipBtn').disabled = false;
   timerEl.className = 'timer';
@@ -787,9 +840,23 @@ function startTimer() {
       timerInterval = null;
       timerEl.className = 'timer done';
       timeUpSound();
-      finishRound(false, 'انتهى الوقت');
+      handleTimeExpired();
     }
   }, 1000);
+}
+
+function handleTimeExpired() {
+  roundActive = false;
+  movieNameEl.textContent = currentMovie.name;
+  movieMetaEl.innerHTML = `
+    <span class="pill ${difficultyClass(currentMovie.difficulty)}">${currentMovie.difficulty}</span>
+    <span class="pill">${currentMovie.era}</span>
+    <span class="pill">الوقت خلص - اختار صح أو غلط</span>
+  `;
+  document.getElementById('correctBtn').disabled = false;
+  document.getElementById('skipBtn').disabled = false;
+  document.getElementById('changeBtn').disabled = false;
+  showToast('الوقت خلص، سجل النتيجة');
 }
 
 function resetTimer() {
@@ -817,7 +884,7 @@ function markCorrect() {
 
 function skipMovie() {
   if (!currentMovie) return;
-  finishRound(false, roundActive ? 'غلط / الوقت خلص' : 'اتلغت');
+  finishRound(false, timeLeft <= 0 ? 'غلط / الوقت خلص' : 'غلط');
 }
 
 function finishRound(success, label) {
@@ -835,6 +902,7 @@ function finishRound(success, label) {
   currentMovie = null;
   document.getElementById('revealBtn').disabled = false;
   document.getElementById('startBtn').disabled = true;
+  document.getElementById('changeBtn').disabled = true;
   document.getElementById('correctBtn').disabled = true;
   document.getElementById('skipBtn').disabled = true;
   setTeam(team === 1 ? 2 : 1);
@@ -871,11 +939,12 @@ function resetGame() {
   document.getElementById('score2').textContent = '0';
   document.getElementById('revealBtn').disabled = false;
   document.getElementById('startBtn').disabled = true;
+  document.getElementById('changeBtn').disabled = true;
   document.getElementById('correctBtn').disabled = true;
   document.getElementById('skipBtn').disabled = true;
   movieLabelEl.textContent = 'اضغط "اكشف فيلم" عشان تبدأ جولة جديدة';
   movieNameEl.textContent = 'جاهزين؟';
-  movieMetaEl.innerHTML = '<span class="pill">117 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
+  movieMetaEl.innerHTML = '<span class="pill">140 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
   historyEl.innerHTML = '<div class="mini-text empty-history">لسه مفيش جولات.</div>';
   updateTeamNames();
   setTeam(1);
