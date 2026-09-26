@@ -378,6 +378,7 @@
   <div class="sel-counter">اخترت <span id="countDisplay">0</span> من 5</div>
   <div class="categories-grid" id="categoriesGrid"></div>
   <button class="start-btn" id="startBtn" onclick="startGame()">🚀 ابدأ اللعبة</button>
+  <button class="btn btn-restart" onclick="copyUsedQuestions()" style="margin-top:12px;">📤 نسخ الأسئلة المستخدمة</button>
   <button class="btn btn-restart" onclick="resetPlayedQuestions()" style="margin-top:12px;">♻️ مسح سجل الأسئلة المستخدمة</button>
 </div>
 
@@ -1032,6 +1033,54 @@ function resetPlayedQuestions() {
   document.getElementById('startBtn').classList.remove('ready');
   buildSelectionScreen();
   showToast('♻️ تم مسح سجل الأسئلة المستخدمة', 'correct');
+}
+
+function formatUsedQuestionsList() {
+  const lines = [];
+  Object.entries(usedQuestions).forEach(([idx, set]) => {
+    const questions = [...set];
+    if (questions.length === 0) return;
+    const category = allCategories[Number(idx)]?.name || `فئة ${idx}`;
+    lines.push(category);
+    questions.forEach((q, i) => lines.push(`${i + 1}. ${q}`));
+    lines.push('');
+  });
+  return lines.join('\n').trim();
+}
+
+function copyUsedQuestions() {
+  const text = formatUsedQuestionsList();
+  if (!text) {
+    showToast('لسه مفيش أسئلة مستخدمة', 'wrong');
+    return;
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('📤 تم نسخ الأسئلة المستخدمة', 'correct'))
+      .catch(() => fallbackCopyUsedQuestions(text));
+    return;
+  }
+
+  fallbackCopyUsedQuestions(text);
+}
+
+function fallbackCopyUsedQuestions(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    document.execCommand('copy');
+    showToast('📤 تم نسخ الأسئلة المستخدمة', 'correct');
+  } catch (e) {
+    alert('انسخ القائمة دي:\n\n' + text);
+  } finally {
+    textarea.remove();
+  }
 }
 
 function goBack() {
