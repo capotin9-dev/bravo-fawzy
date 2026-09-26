@@ -521,6 +521,13 @@
     <div class="stats">
       <div class="stat"><b id="remainingCount">140</b><span>أفلام متبقية</span></div>
       <div class="stat"><b id="playedCount">0</b><span>جولات ملعوبة</span></div>
+      <div class="stat"><b id="usedCount">0</b><span>أفلام مستخدمة سابقاً</span></div>
+      <div class="stat"><b id="totalCount">140</b><span>إجمالي الأفلام</span></div>
+    </div>
+    <div class="controls">
+      <button class="secondary" onclick="showUsedMovies()">📋 عرض الأفلام المستخدمة</button>
+      <button class="secondary" onclick="copyUsedMovies()">📤 نسخ الأفلام المستخدمة</button>
+      <button class="secondary" onclick="clearUsedMovies()">🧹 مسح الأفلام المستخدمة</button>
     </div>
     <div class="history" id="history"></div>
   </section>
@@ -682,12 +689,38 @@ let timerInterval = null;
 let timeLeft = 90;
 let played = 0;
 const difficultyLevels = ['سهل', 'متوسط', 'صعب'];
+const USED_MOVIES_KEY = 'fawzyMovies.usedMovies.v1';
 
 const timerEl = document.getElementById('timer');
 const movieLabelEl = document.getElementById('movieLabel');
 const movieNameEl = document.getElementById('movieName');
 const movieMetaEl = document.getElementById('movieMeta');
 const historyEl = document.getElementById('history');
+
+function loadUsedMovies() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(USED_MOVIES_KEY) || '[]');
+    const currentNames = new Set(movies.map(movie => movie.name));
+    return new Set(Array.isArray(stored) ? stored.filter(name => currentNames.has(name)) : []);
+  } catch (e) {
+    return new Set();
+  }
+}
+
+function saveUsedMovies(usedMovies) {
+  localStorage.setItem(USED_MOVIES_KEY, JSON.stringify([...usedMovies]));
+}
+
+function markMovieUsed(movie) {
+  const usedMovies = loadUsedMovies();
+  usedMovies.add(movie.name);
+  saveUsedMovies(usedMovies);
+}
+
+function availableMoviePool() {
+  const usedMovies = loadUsedMovies();
+  return movies.filter(movie => !usedMovies.has(movie.name));
+}
 
 function getTeamName(teamNumber) {
   const input = document.getElementById(`team${teamNumber}Input`);
@@ -711,8 +744,9 @@ function shuffle(items) {
 }
 
 function buildDecks() {
+  const availableMovies = availableMoviePool();
   decksByDifficulty = difficultyLevels.reduce((decks, level) => {
-    decks[level] = shuffle(movies.filter(movie => movie.difficulty === level));
+    decks[level] = shuffle(availableMovies.filter(movie => movie.difficulty === level));
     return decks;
   }, {});
 }
@@ -768,7 +802,7 @@ function revealMovie() {
   }
 
   if (remainingMovies() === 0) {
-    showToast('خلصت كل الأفلام، ابدأ لعبة جديدة');
+    showToast('خلصت الأفلام المتاحة، امسح سجل المستخدمة لو عايز تعيدها');
     return;
   }
 
@@ -892,6 +926,7 @@ function finishRound(success, label) {
   timerInterval = null;
   roundActive = false;
   played++;
+  markMovieUsed(currentMovie);
   movieNameEl.textContent = currentMovie.name;
   movieMetaEl.innerHTML = `
     <span class="pill ${difficultyClass(currentMovie.difficulty)}">${currentMovie.difficulty}</span>
@@ -924,8 +959,67 @@ function addHistory(movie, success, label, playedTeam) {
 }
 
 function updateStats() {
+  const usedMovies = loadUsedMovies();
   document.getElementById('remainingCount').textContent = remainingMovies();
   document.getElementById('playedCount').textContent = played;
+  document.getElementById('usedCount').textContent = usedMovies.size;
+  document.getElementById('totalCount').textContent = movies.length;
+}
+
+function showUsedMovies() {
+  const usedMovies = [...loadUsedMovies()];
+  if (usedMovies.length === 0) {
+    showToast('لسه مفيش أفلام مستخدمة');
+    return;
+  }
+
+  alert('الأفلام المستخدمة:\n\n' + usedMovies.map((name, index) => `${index + 1}. ${name}`).join('\n'));
+}
+
+function formatUsedMoviesList() {
+  return [...loadUsedMovies()].map((name, index) => `${index + 1}. ${name}`).join('\n');
+}
+
+function copyUsedMovies() {
+  const text = formatUsedMoviesList();
+  if (!text) {
+    showToast('لسه مفيش أفلام مستخدمة');
+    return;
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('تم نسخ الأفلام المستخدمة'))
+      .catch(() => fallbackCopyUsedMovies(text));
+    return;
+  }
+
+  fallbackCopyUsedMovies(text);
+}
+
+function fallbackCopyUsedMovies(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    document.execCommand('copy');
+    showToast('تم نسخ الأفلام المستخدمة');
+  } catch (e) {
+    alert('انسخ القائمة دي:\n\n' + text);
+  } finally {
+    textarea.remove();
+  }
+}
+
+function clearUsedMovies() {
+  if (!confirm('تمسح سجل الأفلام المستخدمة وترجع كل الأفلام للبركة؟')) return;
+  localStorage.removeItem(USED_MOVIES_KEY);
+  resetGame();
+  showToast('تم مسح سجل الأفلام المستخدمة');
 }
 
 function resetGame() {
