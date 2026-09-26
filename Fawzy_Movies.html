@@ -490,7 +490,7 @@
           <div class="movie-label" id="movieLabel">اضغط "اكشف فيلم" عشان تبدأ جولة جديدة</div>
           <div class="movie-name" id="movieName">جاهزين؟</div>
           <div class="movie-meta" id="movieMeta">
-            <span class="pill">120 فيلم في البركة</span>
+            <span class="pill">117 فيلم في البركة</span>
             <span class="pill">قديم وجديد</span>
             <span class="pill">سهل وصعب</span>
           </div>
@@ -518,7 +518,7 @@
     <div class="side-title">متابعة اللعبة</div>
     <p class="mini-text">الأفلام لا تتكرر بين الفريقين في نفس اللعبة. لو الفريق ما عرفش أو الوقت خلص، الجولة تتحسب غلط وتقدر تكشف فيلم جديد للفريق التالي.</p>
     <div class="stats">
-      <div class="stat"><b id="remainingCount">120</b><span>أفلام متبقية</span></div>
+      <div class="stat"><b id="remainingCount">117</b><span>أفلام متبقية</span></div>
       <div class="stat"><b id="playedCount">0</b><span>جولات ملعوبة</span></div>
     </div>
     <div class="history" id="history"></div>
@@ -531,10 +531,8 @@
 const movies = [
   { name: 'الفيل الأزرق', era: 'جديد', difficulty: 'سهل' },
   { name: 'ولاد رزق', era: 'جديد', difficulty: 'سهل' },
-  { name: 'كيرة والجن', era: 'جديد', difficulty: 'متوسط' },
   { name: 'الحريفة', era: 'جديد', difficulty: 'سهل' },
   { name: 'بيت الروبي', era: 'جديد', difficulty: 'سهل' },
-  { name: 'البعبع', era: 'جديد', difficulty: 'سهل' },
   { name: 'مرعي البريمو', era: 'جديد', difficulty: 'متوسط' },
   { name: 'شماريخ', era: 'جديد', difficulty: 'متوسط' },
   { name: 'فضل ونعمة', era: 'جديد', difficulty: 'سهل' },
@@ -543,7 +541,6 @@ const movies = [
   { name: 'وقفة رجالة', era: 'جديد', difficulty: 'سهل' },
   { name: 'العارف', era: 'جديد', difficulty: 'متوسط' },
   { name: 'مش أنا', era: 'جديد', difficulty: 'سهل' },
-  { name: 'موسى', era: 'جديد', difficulty: 'صعب' },
   { name: 'الغسالة', era: 'جديد', difficulty: 'سهل' },
   { name: 'البعض لا يذهب للمأذون مرتين', era: 'جديد', difficulty: 'صعب' },
   { name: 'لص بغداد', era: 'جديد', difficulty: 'سهل' },
@@ -878,7 +875,7 @@ function resetGame() {
   document.getElementById('skipBtn').disabled = true;
   movieLabelEl.textContent = 'اضغط "اكشف فيلم" عشان تبدأ جولة جديدة';
   movieNameEl.textContent = 'جاهزين؟';
-  movieMetaEl.innerHTML = '<span class="pill">120 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
+  movieMetaEl.innerHTML = '<span class="pill">117 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
   historyEl.innerHTML = '<div class="mini-text empty-history">لسه مفيش جولات.</div>';
   updateTeamNames();
   setTeam(1);
