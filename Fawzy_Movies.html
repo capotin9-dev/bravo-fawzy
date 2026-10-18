@@ -745,6 +745,76 @@ const movies = [
   { name: 'البعض يذهب للمأذون مرتين', era: 'قديم', difficulty: 'صعب' }
 ];
 
+const archivedMovies = [
+  { name: 'عمارة يعقوبيان', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'أسماء', era: 'جديد', difficulty: 'صعب' },
+  { name: '678', era: 'جديد', difficulty: 'صعب' },
+  { name: 'إسماعيلية رايح جاي', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'البريء', era: 'قديم', difficulty: 'صعب' },
+  { name: 'حتى لا يطير الدخان', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الحرام', era: 'قديم', difficulty: 'صعب' },
+  { name: 'العارف', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'النوم في العسل', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'ليل وقضبان', era: 'قديم', difficulty: 'صعب' },
+  { name: 'زوجة رجل مهم', era: 'قديم', difficulty: 'صعب' },
+  { name: 'البعض لا يذهب للمأذون مرتين', era: 'جديد', difficulty: 'صعب' },
+  { name: 'تجيبها كده تجيلها كده هي كده', era: 'قديم', difficulty: 'صعب' },
+  { name: 'سمع هس', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'الكيت كات', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'المنسي', era: 'قديم', difficulty: 'صعب' },
+  { name: 'البحث عن فضيحة', era: 'قديم', difficulty: 'سهل' },
+  { name: 'طير إنت', era: 'جديد', difficulty: 'سهل' },
+  { name: 'المومياء', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الاختيار', era: 'قديم', difficulty: 'صعب' },
+  { name: 'موعد على العشاء', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'طيور الظلام', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'رجب فوق صفيح ساخن', era: 'قديم', difficulty: 'سهل' },
+  { name: 'سر طاقية الإخفاء', era: 'قديم', difficulty: 'سهل' },
+  { name: 'آسف على الإزعاج', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'أهل القمة', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'معبودة الجماهير', era: 'قديم', difficulty: 'سهل' },
+  { name: 'الراقصة والسياسي', era: 'قديم', difficulty: 'سهل' },
+  { name: 'عوكل', era: 'جديد', difficulty: 'سهل' },
+  { name: 'البيه البواب', era: 'قديم', difficulty: 'سهل' },
+  { name: 'خمسة باب', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'مرعي البريمو', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'الناظر', era: 'جديد', difficulty: 'سهل' },
+  { name: 'صعيدي في الجامعة الأمريكية', era: 'جديد', difficulty: 'سهل' },
+  { name: 'وقفة رجالة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'الحريفة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'طلق صناعي', era: 'جديد', difficulty: 'سهل' },
+  { name: 'ولاد العم', era: 'جديد', difficulty: 'سهل' },
+  { name: 'الغسالة', era: 'جديد', difficulty: 'سهل' },
+  { name: 'شنبو في المصيدة', era: 'قديم', difficulty: 'سهل' },
+  { name: 'البيضة والحجر', era: 'قديم', difficulty: 'سهل' },
+  { name: 'اللعب مع الكبار', era: 'قديم', difficulty: 'سهل' },
+  { name: 'لص بغداد', era: 'جديد', difficulty: 'سهل' },
+  { name: 'ظرف طارق', era: 'جديد', difficulty: 'سهل' },
+  { name: 'عودة مواطن', era: 'قديم', difficulty: 'صعب' },
+  { name: 'زائر الفجر', era: 'قديم', difficulty: 'صعب' },
+  { name: 'خميس يغزو القاهرة', era: 'قديم', difficulty: 'صعب' },
+  { name: 'فتاة المصنع', era: 'جديد', difficulty: 'صعب' },
+  { name: 'نوارة', era: 'جديد', difficulty: 'صعب' },
+  { name: 'خالي من الكوليسترول', era: 'جديد', difficulty: 'صعب' },
+  { name: 'خادمة ولكن', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الطوق والأسورة', era: 'قديم', difficulty: 'صعب' },
+  { name: 'فرش وغطا', era: 'جديد', difficulty: 'صعب' },
+  { name: 'عش الغراب', era: 'جديد', difficulty: 'صعب' },
+  { name: 'لهاليبو', era: 'قديم', difficulty: 'صعب' },
+  { name: 'كلفتي', era: 'قديم', difficulty: 'صعب' },
+  { name: 'شرم برم', era: 'جديد', difficulty: 'صعب' },
+  { name: 'قصاقيص العشاق', era: 'جديد', difficulty: 'صعب' },
+  { name: 'لا مؤاخذة', era: 'جديد', difficulty: 'صعب' },
+  { name: 'هاللو أمريكا', era: 'قديم', difficulty: 'صعب' },
+  { name: 'أسطورة روز اليوسف', era: 'جديد', difficulty: 'صعب' },
+  { name: 'ميكروفون', era: 'جديد', difficulty: 'صعب' },
+  { name: 'أريد حلا', era: 'قديم', difficulty: 'صعب' },
+  { name: 'ملف في الآداب', era: 'قديم', difficulty: 'صعب' }
+];
+
+const fullMode = new URLSearchParams(window.location.search).get('full') === '1';
+const activeMoviePool = fullMode ? [...movies, ...archivedMovies] : movies;
+
 let team = 1;
 let scores = { 1: 0, 2: 0 };
 let decksByDifficulty = {};
@@ -757,7 +827,7 @@ let autoStartLeft = 10;
 let timeLeft = 90;
 let played = 0;
 const difficultyLevels = ['سهل', 'متوسط', 'صعب'];
-const USED_MOVIES_KEY = 'fawzyMovies.usedMovies.v1';
+const USED_MOVIES_KEY = fullMode ? 'fawzyMoviesFull.usedMovies.v1' : 'fawzyMovies.usedMovies.v1';
 
 const timerEl = document.getElementById('timer');
 const movieLabelEl = document.getElementById('movieLabel');
@@ -768,7 +838,7 @@ const historyEl = document.getElementById('history');
 function loadUsedMovies() {
   try {
     const stored = JSON.parse(localStorage.getItem(USED_MOVIES_KEY) || '[]');
-    const currentNames = new Set(movies.map(movie => movie.name));
+    const currentNames = new Set(activeMoviePool.map(movie => movie.name));
     return new Set(Array.isArray(stored) ? stored.filter(name => currentNames.has(name)) : []);
   } catch (e) {
     return new Set();
@@ -787,7 +857,7 @@ function markMovieUsed(movie) {
 
 function availableMoviePool() {
   const usedMovies = loadUsedMovies();
-  return movies.filter(movie => !usedMovies.has(movie.name));
+  return activeMoviePool.filter(movie => !usedMovies.has(movie.name));
 }
 
 function getTeamName(teamNumber) {
@@ -1065,7 +1135,7 @@ function updateStats() {
   document.getElementById('remainingCount').textContent = remainingMovies();
   document.getElementById('playedCount').textContent = played;
   document.getElementById('usedCount').textContent = usedMovies.size;
-  document.getElementById('totalCount').textContent = movies.length;
+  document.getElementById('totalCount').textContent = activeMoviePool.length;
 }
 
 function showUsedMovies() {
@@ -1140,7 +1210,7 @@ function resetGame() {
   document.getElementById('skipBtn').disabled = true;
   movieLabelEl.textContent = 'اضغط "اكشف فيلم" عشان تبدأ جولة جديدة';
   movieNameEl.textContent = 'جاهزين؟';
-  movieMetaEl.innerHTML = '<span class="pill">208 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
+  movieMetaEl.innerHTML = `<span class="pill">${activeMoviePool.length} فيلم في البركة</span><span class="pill">${fullMode ? 'القائمة الكاملة' : 'القائمة الحالية'}</span><span class="pill">سهل وصعب</span>`;
   historyEl.innerHTML = '<div class="mini-text empty-history">لسه مفيش جولات.</div>';
   updateTeamNames();
   setTeam(1);
