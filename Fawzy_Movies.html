@@ -490,7 +490,7 @@
           <div class="movie-label" id="movieLabel">اضغط "اكشف فيلم" عشان تبدأ جولة جديدة</div>
           <div class="movie-name" id="movieName">جاهزين؟</div>
           <div class="movie-meta" id="movieMeta">
-            <span class="pill">202 فيلم في البركة</span>
+            <span class="pill">208 فيلم في البركة</span>
             <span class="pill">قديم وجديد</span>
             <span class="pill">سهل وصعب</span>
           </div>
@@ -519,10 +519,10 @@
     <div class="side-title">متابعة اللعبة</div>
     <p class="mini-text">الأفلام لا تتكرر بين الفريقين في نفس اللعبة. لو الفريق ما عرفش أو الوقت خلص، الجولة تتحسب غلط وتقدر تكشف فيلم جديد للفريق التالي.</p>
     <div class="stats">
-      <div class="stat"><b id="remainingCount">202</b><span>أفلام متبقية</span></div>
+      <div class="stat"><b id="remainingCount">208</b><span>أفلام متبقية</span></div>
       <div class="stat"><b id="playedCount">0</b><span>جولات ملعوبة</span></div>
       <div class="stat"><b id="usedCount">0</b><span>أفلام مستخدمة سابقاً</span></div>
-      <div class="stat"><b id="totalCount">202</b><span>إجمالي الأفلام</span></div>
+      <div class="stat"><b id="totalCount">208</b><span>إجمالي الأفلام</span></div>
     </div>
     <div class="controls">
       <button class="secondary" onclick="copyUsedMovies()">📤 نسخ الأفلام المستخدمة</button>
@@ -537,9 +537,7 @@
 const movies = [
   { name: 'الفيل الأزرق', era: 'جديد', difficulty: 'سهل' },
   { name: 'ولاد رزق', era: 'جديد', difficulty: 'سهل' },
-  { name: 'فتاة المصنع', era: 'جديد', difficulty: 'صعب' },
   { name: 'بيت الروبي', era: 'جديد', difficulty: 'سهل' },
-  { name: 'ميكروفون', era: 'جديد', difficulty: 'صعب' },
   { name: 'شماريخ', era: 'جديد', difficulty: 'متوسط' },
   { name: 'فضل ونعمة', era: 'جديد', difficulty: 'سهل' },
   { name: 'تسليم أهالي', era: 'جديد', difficulty: 'سهل' },
@@ -547,13 +545,10 @@ const movies = [
   { name: 'عين شمس', era: 'جديد', difficulty: 'صعب' },
   { name: 'الفاجومي', era: 'جديد', difficulty: 'متوسط' },
   { name: 'مش أنا', era: 'جديد', difficulty: 'سهل' },
-  { name: 'نوارة', era: 'جديد', difficulty: 'صعب' },
   { name: 'رسائل البحر', era: 'جديد', difficulty: 'صعب' },
-  { name: 'لص بغداد', era: 'جديد', difficulty: 'سهل' },
   { name: 'نادي الرجال السري', era: 'جديد', difficulty: 'متوسط' },
   { name: 'تراب الماس', era: 'جديد', difficulty: 'متوسط' },
   { name: 'حرب كرموز', era: 'جديد', difficulty: 'متوسط' },
-  { name: 'فرش وغطا', era: 'جديد', difficulty: 'صعب' },
   { name: 'الخلية', era: 'جديد', difficulty: 'متوسط' },
   { name: 'تصبح على خير', era: 'جديد', difficulty: 'سهل' },
   { name: 'هيبتا', era: 'جديد', difficulty: 'صعب' },
@@ -564,7 +559,6 @@ const movies = [
   { name: 'أهواك', era: 'جديد', difficulty: 'سهل' },
   { name: 'زنقة ستات', era: 'جديد', difficulty: 'سهل' },
   { name: 'الحرب العالمية الثالثة', era: 'جديد', difficulty: 'سهل' },
-  { name: 'لا مؤاخذة', era: 'جديد', difficulty: 'صعب' },
   { name: 'سمير أبو النيل', era: 'جديد', difficulty: 'سهل' },
   { name: 'إكس لارج', era: 'جديد', difficulty: 'سهل' },
   { name: 'عسل أسود', era: 'جديد', difficulty: 'سهل' },
@@ -575,7 +569,6 @@ const movies = [
   { name: 'قبل زحمة الصيف', era: 'جديد', difficulty: 'صعب' },
   { name: 'مرجان أحمد مرجان', era: 'جديد', difficulty: 'سهل' },
   { name: 'كده رضا', era: 'جديد', difficulty: 'سهل' },
-  { name: 'ظرف طارق', era: 'جديد', difficulty: 'سهل' },
   { name: 'زكي شان', era: 'جديد', difficulty: 'سهل' },
   { name: 'حريم كريم', era: 'جديد', difficulty: 'سهل' },
   { name: 'ملاكي إسكندرية', era: 'جديد', difficulty: 'متوسط' },
@@ -590,7 +583,7 @@ const movies = [
   { name: 'همام في أمستردام', era: 'جديد', difficulty: 'متوسط' },
   { name: 'الخروج للنهار', era: 'جديد', difficulty: 'صعب' },
   { name: 'عبود على الحدود', era: 'جديد', difficulty: 'سهل' },
-  { name: 'يوم حلو ويوم مر', era: 'قديم', difficulty: 'متوسط' },
+  { name: 'يوم مر ويوم حلو', era: 'قديم', difficulty: 'متوسط' },
   { name: 'الإرهاب والكباب', era: 'قديم', difficulty: 'سهل' },
   { name: 'القاهرة 30', era: 'قديم', difficulty: 'صعب' },
   { name: 'بخيت وعديلة', era: 'قديم', difficulty: 'سهل' },
@@ -629,7 +622,6 @@ const movies = [
   { name: 'مراتي مدير عام', era: 'قديم', difficulty: 'سهل' },
   { name: 'صغيرة على الحب', era: 'قديم', difficulty: 'سهل' },
   { name: 'الزوجة الثانية', era: 'قديم', difficulty: 'متوسط' },
-  { name: 'زائر الفجر', era: 'قديم', difficulty: 'صعب' },
   { name: 'بين القصرين', era: 'قديم', difficulty: 'متوسط' },
   { name: 'دعاء الكروان', era: 'قديم', difficulty: 'صعب' },
   { name: 'باب الحديد', era: 'قديم', difficulty: 'متوسط' },
@@ -645,18 +637,15 @@ const movies = [
   { name: 'غزل البنات', era: 'قديم', difficulty: 'سهل' },
   { name: 'سي عمر', era: 'قديم', difficulty: 'متوسط' },
   { name: 'أرض الخوف', era: 'قديم', difficulty: 'صعب' },
-  { name: 'ملف في الآداب', era: 'قديم', difficulty: 'صعب' },
   { name: 'التوت والنبوت', era: 'قديم', difficulty: 'صعب' },
   { name: 'أحلام هند وكاميليا', era: 'قديم', difficulty: 'صعب' },
   { name: 'عودة الابن الضال', era: 'قديم', difficulty: 'صعب' },
-  { name: 'الطوق والأسورة', era: 'قديم', difficulty: 'صعب' },
   { name: 'السقا مات', era: 'قديم', difficulty: 'صعب' },
   { name: 'المواطن مصري', era: 'قديم', difficulty: 'صعب' },
   { name: 'المذنبون', era: 'قديم', difficulty: 'صعب' },
   { name: 'على من نطلق الرصاص', era: 'قديم', difficulty: 'صعب' },
   { name: 'الهروب', era: 'قديم', difficulty: 'متوسط' },
   { name: 'ضد الحكومة', era: 'قديم', difficulty: 'متوسط' },
-  { name: 'عودة مواطن', era: 'قديم', difficulty: 'صعب' },
   { name: 'الدرجة الثالثة', era: 'قديم', difficulty: 'صعب' },
   { name: 'سواق الأتوبيس', era: 'قديم', difficulty: 'متوسط' },
   { name: 'عصابة حمادة وتوتو', era: 'قديم', difficulty: 'سهل' },
@@ -666,7 +655,6 @@ const movies = [
   { name: 'الحب فوق هضبة الهرم', era: 'قديم', difficulty: 'صعب' },
   { name: 'خرج ولم يعد', era: 'قديم', difficulty: 'صعب' },
   { name: 'للحب قصة أخيرة', era: 'قديم', difficulty: 'صعب' },
-  { name: 'عش الغراب', era: 'جديد', difficulty: 'صعب' },
   { name: 'لا تراجع ولا استسلام', era: 'جديد', difficulty: 'سهل' },
   { name: 'سمير وشهير وبهير', era: 'جديد', difficulty: 'سهل' },
   { name: 'فاصل من اللحظات اللذيذة', era: 'جديد', difficulty: 'متوسط' },
@@ -675,27 +663,21 @@ const movies = [
   { name: 'الدادة دودي', era: 'جديد', difficulty: 'سهل' },
   { name: 'طائر الليل الحزين', era: 'قديم', difficulty: 'صعب' },
   { name: 'الرجل العناب', era: 'جديد', difficulty: 'متوسط' },
-  { name: 'لهاليبو', era: 'قديم', difficulty: 'صعب' },
   { name: 'العايقة والدريسة', era: 'قديم', difficulty: 'صعب' },
   { name: 'تجارة السموم', era: 'قديم', difficulty: 'صعب' },
   { name: 'مجانينو', era: 'قديم', difficulty: 'صعب' },
-  { name: 'خالي من الكوليسترول', era: 'جديد', difficulty: 'صعب' },
   { name: 'أنا اللي أستاهل', era: 'قديم', difficulty: 'صعب' },
   { name: 'رنة خلخال', era: 'جديد', difficulty: 'صعب' },
   { name: 'نظرة الحب', era: 'جديد', difficulty: 'صعب' },
-  { name: 'خادمة ولكن', era: 'قديم', difficulty: 'صعب' },
   { name: 'الحقونا', era: 'قديم', difficulty: 'صعب' },
   { name: 'لحم رخيص', era: 'قديم', difficulty: 'صعب' },
   { name: 'مستر كراتيه', era: 'قديم', difficulty: 'متوسط' },
   { name: 'مخالب امرأة', era: 'قديم', difficulty: 'صعب' },
   { name: 'ممنوع في ليلة الدخلة', era: 'قديم', difficulty: 'صعب' },
-  { name: 'أريد حلا', era: 'قديم', difficulty: 'صعب' },
-  { name: 'كلفتي', era: 'قديم', difficulty: 'صعب' },
   { name: 'رمضان مبروك أبو العلمين حمودة', era: 'جديد', difficulty: 'متوسط' },
   { name: 'أنا اللي قتلت الحنش', era: 'قديم', difficulty: 'صعب' },
   { name: 'عيب يا لولو يا لولو عيب', era: 'قديم', difficulty: 'صعب' },
   { name: 'ألو أنا القطة', era: 'قديم', difficulty: 'صعب' },
-  { name: 'خميس يغزو القاهرة', era: 'قديم', difficulty: 'صعب' },
   { name: 'عليش دخل الجيش', era: 'قديم', difficulty: 'صعب' },
   { name: 'مخيمر دايماً جاهز', era: 'قديم', difficulty: 'صعب' },
   { name: 'الخرتيت', era: 'قديم', difficulty: 'صعب' },
@@ -707,11 +689,9 @@ const movies = [
   { name: 'الحساب يا مدموزيل', era: 'قديم', difficulty: 'صعب' },
   { name: 'شباب امرأة', era: 'قديم', difficulty: 'صعب' },
   { name: 'درب المهابيل', era: 'قديم', difficulty: 'صعب' },
-  { name: 'قصاقيص العشاق', era: 'جديد', difficulty: 'صعب' },
   { name: 'بهاريز', era: 'جديد', difficulty: 'صعب' },
   { name: 'العرضحالجي في قضية نصب', era: 'قديم', difficulty: 'صعب' },
   { name: 'حالة وهيبة حرجة', era: 'جديد', difficulty: 'صعب' },
-  { name: 'أسطورة روز اليوسف', era: 'جديد', difficulty: 'صعب' },
   { name: 'كذلك في الزمالك', era: 'جديد', difficulty: 'صعب' },
   { name: 'فلاح في الكونجرس', era: 'جديد', difficulty: 'صعب' },
   { name: 'عودة مدرسة المشاغبين', era: 'جديد', difficulty: 'صعب' },
@@ -721,7 +701,6 @@ const movies = [
   { name: 'زكية زكريا في البرلمان', era: 'جديد', difficulty: 'صعب' },
   { name: 'لي لي', era: 'جديد', difficulty: 'صعب' },
   { name: 'الشرابية', era: 'قديم', difficulty: 'صعب' },
-  { name: 'شرم برم', era: 'جديد', difficulty: 'صعب' },
   { name: 'جرانيتا', era: 'جديد', difficulty: 'صعب' },
   { name: 'كرسي في الكلوب', era: 'جديد', difficulty: 'صعب' },
   { name: 'عنبر والألوان', era: 'قديم', difficulty: 'صعب' },
@@ -736,7 +715,34 @@ const movies = [
   { name: 'الكافير', era: 'جديد', difficulty: 'صعب' },
   { name: 'بسيوني تحت القبة', era: 'قديم', difficulty: 'صعب' },
   { name: 'لامؤاخذة يا دعبس', era: 'جديد', difficulty: 'صعب' },
-  { name: 'هاللو أمريكا', era: 'قديم', difficulty: 'صعب' }
+  { name: 'ولا كان على البال', era: 'جديد', difficulty: 'صعب' },
+  { name: 'برشامة', era: 'جديد', difficulty: 'صعب' },
+  { name: 'إيجي بست', era: 'جديد', difficulty: 'صعب' },
+  { name: 'جوازة ولا جنازة', era: 'جديد', difficulty: 'صعب' },
+  { name: 'مؤلف ومخرج وحرامي', era: 'جديد', difficulty: 'صعب' },
+  { name: 'إن غاب القط', era: 'جديد', difficulty: 'صعب' },
+  { name: 'الملحد', era: 'جديد', difficulty: 'صعب' },
+  { name: 'طلقني', era: 'جديد', difficulty: 'صعب' },
+  { name: 'الهنا اللي أنا فيه', era: 'جديد', difficulty: 'صعب' },
+  { name: 'فوي فوي فوي', era: 'جديد', difficulty: 'صعب' },
+  { name: 'ولاد رزق ٣', era: 'جديد', difficulty: 'متوسط' },
+  { name: 'الناصر صلاح الدين', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الأرض', era: 'قديم', difficulty: 'صعب' },
+  { name: 'بداية ونهاية', era: 'قديم', difficulty: 'صعب' },
+  { name: 'اللص والكلاب', era: 'قديم', difficulty: 'صعب' },
+  { name: 'البوسطجي', era: 'قديم', difficulty: 'صعب' },
+  { name: 'المصير', era: 'قديم', difficulty: 'صعب' },
+  { name: 'إمبراطورية ميم', era: 'قديم', difficulty: 'صعب' },
+  { name: 'شفيقة ومتولي', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الأيدي الناعمة', era: 'قديم', difficulty: 'صعب' },
+  { name: 'موعد مع السعادة', era: 'قديم', difficulty: 'صعب' },
+  { name: 'الغول', era: 'قديم', difficulty: 'صعب' },
+  { name: 'وداع في الفجر', era: 'قديم', difficulty: 'صعب' },
+  { name: 'احنا بتوع الاتوبيس', era: 'قديم', difficulty: 'صعب' },
+  { name: 'صغير على الحب', era: 'قديم', difficulty: 'صعب' },
+  { name: 'أفواه وأرانب', era: 'قديم', difficulty: 'صعب' },
+  { name: 'حبيبي دائماً', era: 'قديم', difficulty: 'صعب' },
+  { name: 'البعض يذهب للمأذون مرتين', era: 'قديم', difficulty: 'صعب' }
 ];
 
 let team = 1;
@@ -1134,7 +1140,7 @@ function resetGame() {
   document.getElementById('skipBtn').disabled = true;
   movieLabelEl.textContent = 'اضغط "اكشف فيلم" عشان تبدأ جولة جديدة';
   movieNameEl.textContent = 'جاهزين؟';
-  movieMetaEl.innerHTML = '<span class="pill">202 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
+  movieMetaEl.innerHTML = '<span class="pill">208 فيلم في البركة</span><span class="pill">قديم وجديد</span><span class="pill">سهل وصعب</span>';
   historyEl.innerHTML = '<div class="mini-text empty-history">لسه مفيش جولات.</div>';
   updateTeamNames();
   setTeam(1);
